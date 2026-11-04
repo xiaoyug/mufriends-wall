@@ -12,8 +12,7 @@ window.WALL_CONFIG = {
                                       // 也可填图片路径/URL 换成别的 Logo
 
   // ---- 上传页二维码 ----
-  uploadUrl: "",                      // 上传页线上地址，填了右下角生成二维码
-                                      // 例: "https://your-name.github.io/yu/"
+  uploadUrl: "https://xiaoyug.github.io/yu/",   // 「遇」线上地址，右下角自动生成二维码
 
   // ---- Supabase 数据中转（已配好，勿动）----
   supabase: {
