@@ -1,27 +1,26 @@
 /* ============================================================
  * 上传页接入代码 —— 贴进你的上传页（「遇」改造版）即可
  *
- * 作用：用户上传照片时，把 照片 + 昵称 + 留言 写到 LeanCloud，
+ * 作用：用户上传照片时，把 照片 + 昵称 + 留言 写到 Supabase，
  *       大屏页每 5 秒轮询一次，新照片自动弹窗 + 汇入滚动。
  *
  * 两步接入：
- * 1. 在 index.html 的 </body> 前引入 LeanCloud SDK：
- *      <script src="https://cdn.jsdelivr.net/npm/leancloud-storage@4.15.1/dist/av-min.js"></script>
+ * 1. 在 index.html 的 </body> 前引入 Supabase SDK：
+ *      <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
  *      <script src="upload-snippet.js"></script>
- * 2. 填好下面三件套（和大屏页 config.js 里必须一致），
+ * 2. 填好下面两个值（和大屏页 config.js 里必须一致），
  *    然后在用户确认上传时调用：
  *      uploadToWall({ nickname: "Sunny", message: "玩得开心！", file: file对象或Blob })
  * ============================================================
  */
 
-// ---- 和大屏页 config.js 里的 leancloud 保持一致 ----
-var LC_CONFIG = {
-  appId: "",
-  appKey: "",
-  serverURL: ""        // 例: "https://xxxx.lc-cn-n1-shared.com"
+// ---- 和大屏页 config.js 里的 supabase 保持一致 ----
+var SB_CONFIG = {
+  url: "",             // 例: "https://abcdefgh.supabase.co"
+  anonKey: ""          // anon public key（可安全暴露在前端）
 };
 
-AV.init(LC_CONFIG);
+var _sb = window.supabase.createClient(SB_CONFIG.url, SB_CONFIG.anonKey);
 
 /**
  * 上传一张照片到照片墙
@@ -33,16 +32,19 @@ AV.init(LC_CONFIG);
  */
 function uploadToWall(opts) {
   return compressImage(opts.file, 1600, 0.8).then(function (blob) {
-    var name = (opts.nickname || "guest") + "-" + Date.now() + ".jpg";
-    var file = new AV.File(name, blob);
-    return file.save().then(function (savedFile) {
-      var row = new AV.Object("PhotoWall");
-      row.set("nickname", String(opts.nickname || "").slice(0, 30));
-      row.set("message", String(opts.message || "").slice(0, 140));
-      row.set("photo", savedFile);
-      row.set("deleted", false);
-      return row.save();
-    });
+    var path = Date.now() + "-" + Math.random().toString(36).slice(2, 8) + ".jpg";
+    return _sb.storage.from("photos").upload(path, blob, { contentType: "image/jpeg" })
+      .then(function (res) {
+        if (res.error) throw res.error;
+        var pub = _sb.storage.from("photos").getPublicUrl(path);
+        return _sb.from("photos").insert({
+          nickname: String(opts.nickname || "").slice(0, 30),
+          message: String(opts.message || "").slice(0, 140),
+          photo_url: pub.data.publicUrl,
+          deleted: false
+        });
+      })
+      .then(function (res) { if (res.error) throw res.error; });
   });
 }
 

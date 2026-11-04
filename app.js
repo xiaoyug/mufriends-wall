@@ -1,6 +1,6 @@
 /* MuFriends 照片墙大屏 · 主逻辑
  * 视觉语言：mu 深圳海报 —— 白底、黑描边、硬投影、拍立得贴纸卡片、等宽字体胶囊
- * 数据源：LeanCloud（config 填了 leancloud 三件套时）或内置 demo 模式
+ * 数据源：Supabase（config 填了 supabase.url / anonKey 时）或内置 demo 模式
  */
 (function () {
   var CFG = window.WALL_CONFIG || {};
@@ -153,10 +153,9 @@
       cell.parentNode.removeChild(cell);
       if (rowIdx >= 0) counts[rowIdx]--;
     }
-    if (lcReady) {
-      var todo = AV.Object.createWithoutData("PhotoWall", pid);
-      todo.set("deleted", true);
-      todo.save().catch(function (e) { console.warn("云端删除失败", e); });
+    if (sb) {
+      sb.from("photos").update({ deleted: true }).eq("id", pid)
+        .then(function (res) { if (res.error) console.warn("云端删除失败", res.error); });
     }
   }
 
@@ -188,77 +187,69 @@
     if (e.key === "m" || e.key === "M") document.body.classList.toggle("managing");
   });
 
-  // ---------- 数据源：LeanCloud ----------
-  var lcReady = false;
+  // ---------- 数据源：Supabase ----------
+  var sb = null;              // supabase client
   var statusEl = $("status");
 
-  function startLeanCloud(lc) {
+  function startSupabase(cfg) {
     var script = document.createElement("script");
-    script.src = "https://cdn.jsdelivr.net/npm/leancloud-storage@4.15.1/dist/av-min.js";
+    script.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js";
     script.onload = function () {
-      AV.init({ appId: lc.appId, appKey: lc.appKey, serverURL: lc.serverURL });
-      lcReady = true;
+      sb = window.supabase.createClient(cfg.url, cfg.anonKey);
       statusEl.className = "ok";
       initialFetch();
       setInterval(pollNew, 5000);
     };
     script.onerror = function () {
       statusEl.className = "err";
-      console.warn("LeanCloud SDK 加载失败，进入 demo 模式");
+      console.warn("Supabase SDK 加载失败，进入 demo 模式");
       startDemo();
     };
     document.head.appendChild(script);
   }
 
-  var lastTime = null;
+  var lastTime = null;   // 已取到的最新 created_at
 
-  function toItem(obj) {
-    var f = obj.get("photo");
+  function toItem(row) {
     return {
-      id: obj.id,
-      url: f && f.url ? f.url() : "",
-      nickname: obj.get("nickname") || "",
-      message: obj.get("message") || "",
-      createdAt: obj.get("createdAt")
+      id: row.id,
+      url: row.photo_url || "",
+      nickname: row.nickname || "",
+      message: row.message || "",
+      createdAt: row.created_at
     };
   }
 
   function initialFetch() {
-    var q = new AV.Query("PhotoWall");
-    q.descending("createdAt");
-    q.limit(50);
-    q.find().then(function (list) {
-      var items = list
-        .filter(function (o) { return !o.get("deleted"); })
-        .map(toItem)
-        .filter(function (it) { return it.url; })
-        .reverse();
-      if (items.length === 0) $("empty").style.display = "flex";
-      items.forEach(addToWall);
-      if (list.length > 0) lastTime = list[0].get("createdAt");
-    }).catch(function (e) {
-      statusEl.className = "err";
-      console.warn("初次拉取失败", e);
-    });
+    sb.from("photos")
+      .select("*")
+      .eq("deleted", false)
+      .order("created_at", { ascending: false })
+      .limit(50)
+      .then(function (res) {
+        if (res.error) { statusEl.className = "err"; console.warn("初次拉取失败", res.error); return; }
+        var items = (res.data || []).map(toItem).filter(function (it) { return it.url; }).reverse();
+        if (items.length === 0) $("empty").style.display = "flex";
+        items.forEach(addToWall);
+        if (res.data && res.data.length > 0) lastTime = res.data[0].created_at;
+      });
   }
 
   function pollNew() {
     if (!lastTime) return;
-    var q = new AV.Query("PhotoWall");
-    q.greaterThan("createdAt", lastTime);
-    q.ascending("createdAt");
-    q.limit(20);
-    q.find().then(function (list) {
-      var fresh = list
-        .filter(function (o) { return !o.get("deleted"); })
-        .map(toItem)
-        .filter(function (it) { return it.url && !seen[it.id]; });
-      fresh.forEach(enqueuePopup);
-      if (list.length > 0) lastTime = list[list.length - 1].get("createdAt");
-    }).catch(function (e) {
-      statusEl.className = "err";
-      console.warn("轮询失败（会自动重试）", e);
-    });
+    sb.from("photos")
+      .select("*")
+      .eq("deleted", false)
+      .gt("created_at", lastTime)
+      .order("created_at", { ascending: true })
+      .limit(20)
+      .then(function (res) {
+        if (res.error) { statusEl.className = "err"; console.warn("轮询失败（会自动重试）", res.error); return; }
+        statusEl.className = "ok";
+        var fresh = (res.data || []).map(toItem).filter(function (it) { return it.url && !seen[it.id]; });
+        fresh.forEach(enqueuePopup);   // 新照片：先弹窗，后入墙
+        if (res.data && res.data.length > 0) lastTime = res.data[res.data.length - 1].created_at;
+      });
   }
 
   // ---------- demo 模式：mu 海报配色 + 涂鸦小人剪影 ----------
@@ -318,11 +309,11 @@
   }
 
   // ---------- 启动 ----------
-  var lc = CFG.leancloud || {};
-  if (lc.appId && lc.appKey && lc.serverURL) {
-    startLeanCloud(lc);
+  var sbCfg = CFG.supabase || {};
+  if (sbCfg.url && sbCfg.anonKey) {
+    startSupabase(sbCfg);
   } else {
-    console.info("[照片墙] 未配置 LeanCloud，进入 demo 模式");
+    console.info("[照片墙] 未配置 Supabase，进入 demo 模式");
     startDemo();
   }
 })();

@@ -15,14 +15,13 @@ window.WALL_CONFIG = {
   uploadUrl: "",                      // 上传页线上地址，填了右下角生成二维码
                                       // 例: "https://your-name.github.io/yu/"
 
-  // ---- LeanCloud 数据中转（串联上传页的关键）----
-  // 1. 去 https://console.leancloud.cn 注册，创建一个应用（开发版，免费）
-  // 2. 在 设置 → 应用凭证 里拿到 App ID / App Key / 服务器地址
-  // 3. 填到下面。不填则进入 demo 模式（用假照片展示效果）
-  leancloud: {
-    appId: "",
-    appKey: "",
-    serverURL: ""                     // 例: "https://xxxx.lc-cn-n1-shared.com"
+  // ---- Supabase 数据中转（串联上传页的关键）----
+  // 我会帮你配好，只需把控制台拿到的两个值填进来：
+  // Dashboard → Project Settings → API → Project URL 和 anon public key
+  // 不填则进入 demo 模式（用假照片展示效果）
+  supabase: {
+    url: "",                          // 例: "https://abcdefgh.supabase.co"
+    anonKey: ""                       // anon public key（可安全暴露在前端）
   },
 
   // ---- 滚动 ----
