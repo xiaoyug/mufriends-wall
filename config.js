@@ -15,13 +15,10 @@ window.WALL_CONFIG = {
   uploadUrl: "",                      // 上传页线上地址，填了右下角生成二维码
                                       // 例: "https://your-name.github.io/yu/"
 
-  // ---- Supabase 数据中转（串联上传页的关键）----
-  // 我会帮你配好，只需把控制台拿到的两个值填进来：
-  // Dashboard → Project Settings → API → Project URL 和 anon public key
-  // 不填则进入 demo 模式（用假照片展示效果）
+  // ---- Supabase 数据中转（已配好，勿动）----
   supabase: {
-    url: "",                          // 例: "https://abcdefgh.supabase.co"
-    anonKey: ""                       // anon public key（可安全暴露在前端）
+    url: "https://kqttuewfmvuuohvqbhel.supabase.co",
+    anonKey: "sb_publishable_TeAH2DCcPXl2e-MVtwyPOQ_kIEQ79YB"
   },
 
   // ---- 滚动 ----

@@ -6,7 +6,7 @@
  *
  * 两步接入：
  * 1. 在 index.html 的 </body> 前引入 Supabase SDK：
- *      <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+ *      <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
  *      <script src="upload-snippet.js"></script>
  * 2. 填好下面两个值（和大屏页 config.js 里必须一致），
  *    然后在用户确认上传时调用：
@@ -16,8 +16,8 @@
 
 // ---- 和大屏页 config.js 里的 supabase 保持一致 ----
 var SB_CONFIG = {
-  url: "",             // 例: "https://abcdefgh.supabase.co"
-  anonKey: ""          // anon public key（可安全暴露在前端）
+  url: "https://kqttuewfmvuuohvqbhel.supabase.co",
+  anonKey: "sb_publishable_TeAH2DCcPXl2e-MVtwyPOQ_kIEQ79YB"
 };
 
 var _sb = window.supabase.createClient(SB_CONFIG.url, SB_CONFIG.anonKey);

@@ -193,7 +193,7 @@
 
   function startSupabase(cfg) {
     var script = document.createElement("script");
-    script.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js";
+    script.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js";
     script.onload = function () {
       sb = window.supabase.createClient(cfg.url, cfg.anonKey);
       statusEl.className = "ok";
