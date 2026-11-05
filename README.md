@@ -74,3 +74,13 @@ npm run dev          # 默认 http://localhost:7100/
 - 数据库 500 MB（一条照片记录仅几百字节）
 - 文件存储 1 GB（压缩后每张照片约 300KB，可存 3000 张以上）
 - 月流量 5 GB，一场活动足够
+
+## 活动后导出照片
+
+```bash
+python3 export-photos.py            # 导出全部照片到 ./export/（含已删除的）
+python3 export-photos.py --live     # 只导出大屏上还在展示的
+```
+
+照片按上传顺序编号下载，同目录生成 `index.csv`（昵称 / 留言 / 上传时间 / 文件名），
+用 Excel 或 Numbers 打开即可对照。无需安装依赖。
