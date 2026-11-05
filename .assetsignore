@@ -1,0 +1,12 @@
+.git
+node_modules
+*.md
+server.js
+package.json
+package-lock.json
+export-photos.py
+supabase-setup.sql
+upload-snippet.js
+wrangler.toml
+.assetsignore
+export/

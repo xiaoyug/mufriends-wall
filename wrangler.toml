@@ -1,0 +1,11 @@
+name = "mufriends-wall"
+compatibility_date = "2026-11-06"
+
+# 纯静态站点：无需 Worker 脚本，直接托管静态文件
+[assets]
+directory = "."
+
+# 绑定 mushenzhen.xyz 子域名（wrangler 会自动配好 DNS）
+routes = [
+  { pattern = "mufriends.mushenzhen.xyz", custom_domain = true }
+]

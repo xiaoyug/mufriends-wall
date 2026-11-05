@@ -84,3 +84,20 @@ python3 export-photos.py --live     # 只导出大屏上还在展示的
 
 照片按上传顺序编号下载，同目录生成 `index.csv`（昵称 / 留言 / 上传时间 / 文件名），
 用 Excel 或 Numbers 打开即可对照。无需安装依赖。
+
+## 线上地址
+
+- **正式（Cloudflare / 国内可访问）**：https://mufriends.mushenzhen.xyz/
+- 备用（GitHub Pages）：https://xiaoyug.github.io/mufriends-wall/
+
+## 重新部署到 Cloudflare
+
+改动文件后，在本目录执行：
+
+```bash
+npx wrangler deploy
+```
+
+静态文件会上传到 Workers 静态资源，`wrangler.toml` 里已绑定
+`mufriends.mushenzhen.xyz`。`.assetsignore` 控制哪些文件不上传
+（本机工具、文档、导出的照片等）。
