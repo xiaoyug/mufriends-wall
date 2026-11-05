@@ -66,6 +66,16 @@
     : Math.floor((window.innerHeight - 220) / rowCount) - gap;
   var photoW = Math.round(photoH * 4 / 3);
   var cellTiltSeed = 0;
+  var innerH = photoH - 18; // 卡片内边距 8 + 10
+
+  // 按图片真实比例修正显示宽度（竖版「遇」卡片完整展示，不被裁切）
+  function fitImg(img) {
+    if (img.naturalWidth && img.naturalHeight) {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      ratio = Math.max(0.45, Math.min(1.9, ratio)); // 防止极端比例撑爆布局
+      img.style.width = Math.round(innerH * ratio) + "px";
+    }
+  }
 
   function Row(dir) {
     this.el = document.createElement("div");
@@ -77,43 +87,80 @@
     wall.appendChild(this.el);
   }
   Row.prototype.addCell = function (item) {
+    var self = this;
     var cell = document.createElement("div");
     cell.className = "cell";
-    cell.style.width = photoW + "px";
     cell.style.height = photoH + "px";
     cell.style.marginRight = gap + "px";
     cell.style.setProperty("--tilt", (((cellTiltSeed++ * 37) % 5) - 2) * 0.9 + "deg");
     cell.dataset.pid = item.id;
 
+    // 宽度跟随图片真实比例：竖版「遇」卡片完整展示，不被裁切
     var img = document.createElement("img");
     img.src = item.url;
     img.alt = item.nickname || "";
+    img.style.width = Math.round(innerH * 4 / 3) + "px"; // 加载前的占位宽度
+    fitImg(img); // 缓存命中时立即修正
+    img.addEventListener("load", function () {
+      fitImg(img);
+      self.ensureFilled();
+    });
     cell.appendChild(img);
 
     var del = document.createElement("div");
     del.className = "del";
     del.textContent = "✕";
     del.title = "删除这张照片";
-    del.addEventListener("click", function (e) {
-      e.stopPropagation();
-      removePhoto(item.id);
-    });
     cell.appendChild(del);
 
     this.el.appendChild(cell);
+    this.ensureFilled();
     return cell;
   };
+
+  // 该行内容总宽（含间距）
+  Row.prototype.rowWidth = function () {
+    var w = 0;
+    for (var c = this.el.firstElementChild; c; c = c.nextElementSibling) w += c.offsetWidth + gap;
+    return w;
+  };
+
+  // 照片太少时循环复制补齐，保证整行铺满屏幕、从左到右无缝滚动
+  Row.prototype.ensureFilled = function () {
+    var need = window.innerWidth + photoH * 2 + gap * 2; // 屏宽 + 两个格子余量
+    var guard = 300;
+    while (this.el.firstElementChild && this.rowWidth() < need && guard-- > 0) {
+      var kids = this.el.children;
+      var n = kids.length;
+      for (var i = 0; i < n && this.rowWidth() < need && guard-- > 0; i++) {
+        var clone = kids[i].cloneNode(true);
+        // 复制品也要按真实比例修宽（clone 不会继承 load 监听）
+        var cimg = clone.querySelector("img");
+        if (cimg) {
+          if (cimg.complete && cimg.naturalWidth) fitImg(cimg);
+          else cimg.addEventListener("load", function (e) { fitImg(e.target); });
+        }
+        this.el.appendChild(clone);
+      }
+    }
+  };
+
   Row.prototype.tick = function (dt) {
     var speed = (CFG.speed || 42) * dt;
     var first = this.el.firstElementChild;
     if (!first) return;
-    var w = first.getBoundingClientRect().width + gap;
     if (this.dir === -1) {
       this.offset -= speed;
+      var w = first.offsetWidth + gap;
       if (this.offset <= -w) { this.el.appendChild(first); this.offset += w; }
     } else {
       this.offset += speed;
-      if (this.offset >= 0) { this.el.insertBefore(this.el.lastElementChild, first); this.offset -= w; }
+      if (this.offset >= 0) {
+        var last = this.el.lastElementChild;
+        var wl = last.offsetWidth + gap;
+        this.el.insertBefore(last, first);
+        this.offset -= wl;
+      }
     }
     this.el.style.transform = "translateX(" + this.offset + "px)";
   };
@@ -153,11 +200,22 @@
       cell.parentNode.removeChild(cell);
       if (rowIdx >= 0) counts[rowIdx]--;
     }
+    rows.forEach(function (r) { r.ensureFilled(); });   // 删除后补齐空缺
     if (sb) {
       sb.from("photos").update({ deleted: true }).eq("id", pid)
         .then(function (res) { if (res.error) console.warn("云端删除失败", res.error); });
     }
   }
+
+  // 删除按钮用事件代理：复制的格子（cloneNode）也能响应点击
+  wall.addEventListener("click", function (e) {
+    var t = e.target;
+    while (t && t !== wall && !(t.classList && t.classList.contains("del"))) t = t.parentNode;
+    if (!t || t === wall) return;
+    e.stopPropagation();
+    var cell = t.parentNode;
+    if (cell && cell.dataset && cell.dataset.pid) removePhoto(cell.dataset.pid);
+  });
 
   // ---------- 新照片弹窗（排队播放）----------
   var popupQueue = [];
@@ -309,6 +367,9 @@
   }
 
   // ---------- 启动 ----------
+  // 调试钩子：控制台可手动加照片验证布局
+  window.__wall = { add: addToWall, popup: enqueuePopup, remove: removePhoto };
+
   var sbCfg = CFG.supabase || {};
   if (sbCfg.url && sbCfg.anonKey) {
     startSupabase(sbCfg);
