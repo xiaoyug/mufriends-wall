@@ -7,7 +7,7 @@ window.WALL_CONFIG = {
 
   // ---- 活动信息 ----
   eventName: "MuFriends",             // 顶部大标题
-  slogan: "下一种生活，由你想象",      // 黑色胶囊标语，留空 "" 则不显示
+  slogan: "下一种生活，由你想象 · Life, as you imagine",   // 黑色胶囊标语，留空 "" 则不显示
   logoUrl: "",                        // 留空 = 使用内置的 mu 深圳 Logo
                                       // 也可填图片路径/URL 换成别的 Logo
 
@@ -36,4 +36,7 @@ window.WALL_CONFIG = {
 
   // ---- demo 模式 ----
   demoCount: 15,                      // demo 模式下生成多少张假照片
+
+  // ---- 补位复制 ----
+  maxCopies: 3,                       // 照片少时每张照片每行最多出现几次（1 = 不复制，留空白）
 };

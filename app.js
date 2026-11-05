@@ -110,7 +110,7 @@
     var del = document.createElement("div");
     del.className = "del";
     del.textContent = "✕";
-    del.title = "删除这张照片";
+    del.title = "删除这张照片 · Delete";
     cell.appendChild(del);
 
     this.el.appendChild(cell);
@@ -126,13 +126,23 @@
   };
 
   // 照片太少时循环复制补齐，保证整行铺满屏幕、从左到右无缝滚动
+  // 每张照片每行最多出现 maxCopies 次，避免满屏都是同一张
   Row.prototype.ensureFilled = function () {
+    var maxCopies = Math.max(1, CFG.maxCopies || 3);
     var need = window.innerWidth + photoH * 2 + gap * 2; // 屏宽 + 两个格子余量
     var guard = 300;
     while (this.el.firstElementChild && this.rowWidth() < need && guard-- > 0) {
+      var seen2 = {};
       var kids = this.el.children;
       var n = kids.length;
+      for (var j = 0; j < n; j++) {
+        var p = kids[j].dataset.pid;
+        seen2[p] = (seen2[p] || 0) + 1;
+      }
+      var clonedAny = false;
       for (var i = 0; i < n && this.rowWidth() < need && guard-- > 0; i++) {
+        var pid = kids[i].dataset.pid;
+        if (seen2[pid] >= maxCopies) continue;   // 这张的出现次数到顶了
         var clone = kids[i].cloneNode(true);
         // 复制品也要按真实比例修宽（clone 不会继承 load 监听）
         var cimg = clone.querySelector("img");
@@ -141,7 +151,10 @@
           else cimg.addEventListener("load", function (e) { fitImg(e.target); });
         }
         this.el.appendChild(clone);
+        seen2[pid]++;
+        clonedAny = true;
       }
+      if (!clonedAny) break;   // 所有照片都到顶，留些空白也不硬凑
     }
   };
 
