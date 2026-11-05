@@ -10,3 +10,4 @@ upload-snippet.js
 wrangler.toml
 .assetsignore
 export/
+worker.js

@@ -15,8 +15,9 @@ window.WALL_CONFIG = {
   uploadUrl: "https://xiaoyug.github.io/yu/",   // 「遇」线上地址，右下角自动生成二维码
 
   // ---- Supabase 数据中转（已配好，勿动）----
+  // 通过 mufriends.mushenzhen.xyz 的 /proxy/ 反代访问，避免国内直连 supabase.co 不稳定
   supabase: {
-    url: "https://kqttuewfmvuuohvqbhel.supabase.co",
+    url: "https://mufriends.mushenzhen.xyz/proxy",
     anonKey: "sb_publishable_TeAH2DCcPXl2e-MVtwyPOQ_kIEQ79YB"
   },
 

@@ -1,9 +1,11 @@
 name = "mufriends-wall"
-compatibility_date = "2026-11-06"
+compatibility_date = "2026-11-05"
+main = "worker.js"
 
-# 纯静态站点：无需 Worker 脚本，直接托管静态文件
+# 静态资产（大屏页面）+ Worker 脚本（/proxy/ 反向代理 Supabase）
 [assets]
 directory = "."
+binding = "ASSETS"
 
 # 绑定 mushenzhen.xyz 子域名（wrangler 会自动配好 DNS）
 routes = [
