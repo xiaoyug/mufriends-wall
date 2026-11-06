@@ -105,6 +105,20 @@
       fitImg(img);
       self.ensureFilled();
     });
+    // 加载失败重试 3 次，仍失败则从墙上移除，避免留破图框
+    var fails = 0;
+    img.addEventListener("error", function () {
+      fails++;
+      if (fails <= 3) {
+        setTimeout(function () { img.src = item.url; }, 1500 * fails);
+      } else if (cell.parentNode) {
+        var rowEl = cell.parentNode;
+        rowEl.removeChild(cell);
+        var idx = rows.findIndex(function (r) { return r.el === rowEl; });
+        if (idx >= 0) counts[idx]--;
+        self.ensureFilled();
+      }
+    });
     cell.appendChild(img);
 
     var del = document.createElement("div");
