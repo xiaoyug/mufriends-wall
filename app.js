@@ -203,7 +203,7 @@
     }
   }
 
-  // 删除按钮用事件代理：复制的格子（cloneNode）也能响应点击
+  // 删除按钮用事件代理，统一在 #wall 上处理点击
   wall.addEventListener("click", function (e) {
     var t = e.target;
     while (t && t !== wall && !(t.classList && t.classList.contains("del"))) t = t.parentNode;
