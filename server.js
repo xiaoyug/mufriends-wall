@@ -33,6 +33,13 @@ var MIME = {
 
 http.createServer(function (req, res) {
   var urlPath = decodeURIComponent(req.url.split("?")[0]);
+  if (urlPath === "/upload") {
+    var q = req.url.indexOf("?") >= 0 ? req.url.slice(req.url.indexOf("?")) : "";
+    res.writeHead(302, { Location: "/upload/" + q });
+    res.end();
+    return;
+  }
+  if (urlPath === "/upload/") urlPath = "/upload/index.html";
   if (urlPath === "/") urlPath = "/index.html";
   var file = path.join(root, path.normalize(urlPath));
   if (file.indexOf(root) !== 0) { res.writeHead(403); res.end(); return; }

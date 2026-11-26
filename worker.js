@@ -43,6 +43,17 @@ export default {
       });
     }
 
+    // 观众上传页和墙同一域名：/upload 与 /upload/
+    if (url.pathname === "/upload") {
+      url.pathname = "/upload/";
+      return Response.redirect(url.toString(), 302);
+    }
+    if (url.pathname === "/upload/") {
+      var assetUrl = new URL(request.url);
+      assetUrl.pathname = "/upload/index.html";
+      return env.ASSETS.fetch(new Request(assetUrl, request));
+    }
+
     return env.ASSETS.fetch(request);
   }
 };
