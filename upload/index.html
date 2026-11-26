@@ -28,6 +28,20 @@
     letter-spacing: 1px;
   }
   .lead { margin: 0; padding: 16px 18px 0; font-size: 15px; color: #eee; }
+  main { padding: 16px 18px 0; }
+  .file { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .big {
+    display: block; width: 100%;
+    margin-top: 14px;
+    padding: 18px 12px;
+    background: #e0f050; color: #111;
+    border: 3px solid #e0f050;
+    font: inherit; font-size: 18px; font-weight: 800; text-align: center;
+    cursor: pointer;
+  }
+  #preview { display: none; width: 100%; height: auto; margin-top: 14px; background: #111; }
+  #preview.show { display: block; }
+  #status { min-height: 1.4em; margin: 12px 0 0; font-size: 14px; color: #ddd; }
   footer {
     margin-top: 28px;
     padding: 16px 18px 0;
@@ -44,15 +58,17 @@
   <p class="hash">#madeinshenzhen</p>
 </header>
 <p class="lead">上传一张现场照片，它会出现在大屏幕上。<br>Upload one event photo. It appears on the big screen.</p>
+<main>
+  <img id="preview" alt="照片预览 / Photo preview">
+  <label class="big" id="pick-label" for="photo">添加照片 / Add a photo</label>
+  <input class="file" id="photo" type="file" accept="image/*">
+  <p id="status" role="status" aria-live="polite"></p>
+</main>
 <footer>
   <span id="offline">muShenzhen 2026</span><br>
   muShenzhen 2026 · upload v1
 </footer>
 <script src="config.js"></script>
-<script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("./sw.js").catch(function () {});
-}
-</script>
+<script src="app.js"></script>
 </body>
 </html>
