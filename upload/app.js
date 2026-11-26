@@ -75,6 +75,16 @@
     img.src = url;
   }
 
+  function optedContact() {
+    if (!$("contact-on").checked) return "";
+    return $("contact").value.trim().slice(0, 80);
+  }
+
+  $("contact-on").addEventListener("change", function () {
+    $("contact-wrap").hidden = !$("contact-on").checked;
+    if (!$("contact-on").checked) $("contact").value = "";
+  });
+
   $("photo").addEventListener("change", function (event) {
     var file = event.target.files && event.target.files[0];
     event.target.value = "";

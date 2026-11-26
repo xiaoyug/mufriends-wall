@@ -54,6 +54,12 @@
   #caption-wrap[hidden] { display: none; }
   #status { min-height: 1.4em; margin: 12px 0 0; font-size: 14px; color: #ddd; }
   .hint { margin: 8px 0 0; font-size: 12px; color: #aaa; }
+  .card { margin-top: 16px; padding: 12px; border: 2px solid #333; }
+  .toggle { display: flex; gap: 10px; align-items: flex-start; font-weight: 700; }
+  .toggle input { width: 22px; height: 22px; margin-top: 2px; flex: none; }
+  .toggle-copy { font-size: 15px; }
+  .toggle-copy span { display: block; font-size: 12px; font-weight: 400; color: #aaa; }
+  #contact-wrap[hidden] { display: none; }
   footer {
     margin-top: 28px;
     padding: 16px 18px 0;
@@ -84,6 +90,16 @@
     <input id="date" type="date">
   </label>
   <p class="hint" id="slug-line"></p>
+  <section class="card" aria-label="联系方式 / Contact">
+    <label class="toggle" for="contact-on">
+      <input id="contact-on" type="checkbox">
+      <span class="toggle-copy">留下联系方式（可选）<span>Add contact info (optional). Off by default.</span></span>
+    </label>
+    <p class="hint">只保存你写下的文字，不能上传二维码或联系方式图片。打开后，这段文字会和照片一起出现在大屏。<br>Text you type only — no QR code and no contact image. If this is on, that text is shown on the wall with your photo.</p>
+    <label class="field" id="contact-wrap" for="contact" hidden>微信 / 邮箱 / Instagram <span>WeChat ID, email, or Instagram</span>
+      <input id="contact" type="text" maxlength="80" autocomplete="off" placeholder="WeChat · email · Instagram">
+    </label>
+  </section>
   <p id="status" role="status" aria-live="polite"></p>
 </main>
 <footer>
