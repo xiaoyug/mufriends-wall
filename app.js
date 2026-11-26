@@ -319,6 +319,12 @@
           date: known ? (CFG.eventDate || today) : today,
           slogan: ""
         };
+        var host = location.hostname;
+        if (host === "localhost" || host === "127.0.0.1") {
+          applyEvent(row);
+          next();
+          return;
+        }
         sb.from("events").insert(row).then(function (ins) {
           if (ins.error) console.warn("活动自动建档失败（不影响展示）", ins.error);
           applyEvent(row);
