@@ -67,6 +67,7 @@
       $("caption-wrap").hidden = false;
       $("pick-label").textContent = "更换照片 / Change photo";
       say("");
+      refreshGate();
     };
     img.onerror = function () {
       URL.revokeObjectURL(url);
@@ -85,12 +86,29 @@
     if (!$("contact-on").checked) $("contact").value = "";
   });
 
+  function canSubmit() {
+    return !!(selected && $("consent").checked);
+  }
+  function refreshGate() {
+    var ready = canSubmit();
+    $("send").disabled = !ready;
+    if (!selected) $("gate").textContent = "请先添加一张照片。 / Add a photo first.";
+    else if (!$("consent").checked) $("gate").textContent = "请先勾选同意后再上传。 / Tick consent before uploading.";
+    else $("gate").textContent = "";
+  }
+
   $("photo").addEventListener("change", function (event) {
     var file = event.target.files && event.target.files[0];
     event.target.value = "";
     if (!file) return;
     showPreview(file);
   });
+  $("consent").addEventListener("change", refreshGate);
+  $("send").addEventListener("click", function () {
+    if (!canSubmit()) { refreshGate(); return; }
+    say("同意已确认，下一步才会发送。 / Consent is on. Sending comes next.");
+  });
+  refreshGate();
 
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("./sw.js").then(function () {
