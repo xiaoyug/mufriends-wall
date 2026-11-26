@@ -1,11 +1,13 @@
 /* 上传页行为。样式在 index.html。
- * 选照片、预览、可选说明、活动名称和日期。还不上墙。
+ * 只上传客人选中的那张照片（压成 JPEG），不合成话题卡，不上传二维码。
+ * 只 INSERT 照片。隐藏照片是大屏按 M 的事，这里不发 PATCH / DELETE。
  */
 (function () {
   var $ = function (id) { return document.getElementById(id); };
   var CFG = window.UPLOAD_CONFIG;
   var selected = null;
   var previewUrl = "";
+  var busy = false;
 
   function pad(n) { return (n < 10 ? "0" : "") + n; }
   function today() {
@@ -21,6 +23,7 @@
   var params = new URLSearchParams(location.search);
   var requested = cleanSlug(params.get("e") || "");
   var slug = requested || CFG.defaultSlug;
+  if (slug === "mufriends-2026-11-06") slug = CFG.defaultSlug;
   var branded = slug === CFG.defaultSlug;
   var defaultName = branded ? CFG.eventName : slug;
   var defaultDate = branded ? CFG.eventDate : today();
@@ -33,7 +36,9 @@
   $("date").addEventListener("input", function () { $("date").dataset.touched = "1"; });
   prefill(defaultName, defaultDate);
   $("slug-line").textContent = "照片只进入这一场 / Photos stay on: " + slug;
-  if (!requested && params.get("e")) {
+  if (requested === "mufriends-2026-11-06") {
+    say("这是 11 月 6 日的旧活动，照片会进入 muShenzhen 2026。 / That link is the 6 Nov event. Photos go to muShenzhen 2026.");
+  } else if (!requested && params.get("e")) {
     say("活动链接无效，已改用 muShenzhen 2026。 / That event link was not valid. Using muShenzhen 2026.");
   }
 
@@ -87,7 +92,66 @@
   });
 
   function canSubmit() {
-    return !!(selected && $("consent").checked);
+    return !busy && !!(selected && $("consent").checked);
+  }
+  function allowsUpload() {
+    var host = location.hostname;
+    return host === "mufriends.mushenzhen.xyz" || host === "localhost" || host === "127.0.0.1";
+  }
+  function authHeaders() {
+    return { apikey: CFG.anonKey, Authorization: "Bearer " + CFG.anonKey };
+  }
+  function compressImage(file) {
+    return new Promise(function (resolve, reject) {
+      var url = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function () {
+        var w = img.naturalWidth || img.width;
+        var h = img.naturalHeight || img.height;
+        URL.revokeObjectURL(url);
+        if (!w || !h) { reject(new Error("decode")); return; }
+        var scale = Math.min(1, 1600 / Math.max(w, h));
+        var canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, Math.round(w * scale));
+        canvas.height = Math.max(1, Math.round(h * scale));
+        var g = canvas.getContext("2d");
+        g.fillStyle = "#ffffff";
+        g.fillRect(0, 0, canvas.width, canvas.height);
+        g.drawImage(img, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob(function (blob) {
+          if (!blob) reject(new Error("compress"));
+          else resolve(blob);
+        }, "image/jpeg", 0.82);
+      };
+      img.onerror = function () {
+        URL.revokeObjectURL(url);
+        reject(new Error("decode"));
+      };
+      img.src = url;
+    });
+  }
+  function photoRow(path) {
+    return {
+      nickname: optedContact(),
+      message: $("caption").value.trim().slice(0, 140),
+      photo_url: CFG.proxy + "/storage/v1/object/public/photos/" + path,
+      event: slug,
+      deleted: false
+    };
+  }
+  function clearPhoto() {
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    previewUrl = "";
+    selected = null;
+    $("preview").removeAttribute("src");
+    $("preview").className = "";
+    $("caption").value = "";
+    $("caption-wrap").hidden = true;
+    $("contact-on").checked = false;
+    $("contact").value = "";
+    $("contact-wrap").hidden = true;
+    $("consent").checked = false;
+    $("pick-label").textContent = "添加照片 / Add a photo";
   }
   function refreshGate() {
     var ready = canSubmit();
@@ -100,14 +164,67 @@
   $("photo").addEventListener("change", function (event) {
     var file = event.target.files && event.target.files[0];
     event.target.value = "";
-    if (!file) return;
+    if (!file || busy) return;
     showPreview(file);
   });
   $("consent").addEventListener("change", refreshGate);
   $("send").addEventListener("click", function () {
     if (!canSubmit()) { refreshGate(); return; }
-    say("同意已确认，下一步才会发送。 / Consent is on. Sending comes next.");
+    if (!allowsUpload()) {
+      say("这是预览，照片没有传到正式墙。 / Preview only. The photo was not sent to the live wall.");
+      return;
+    }
+    var file = selected;
+    busy = true;
+    refreshGate();
+    say("正在上传… / Uploading…");
+    compressImage(file).then(function (blob) {
+      var path = Date.now() + "-" + Math.random().toString(36).slice(2, 8) + ".jpg";
+      var headers = authHeaders();
+      return fetch(CFG.proxy + "/storage/v1/object/photos/" + path, {
+        method: "POST",
+        headers: { apikey: headers.apikey, Authorization: headers.Authorization, "Content-Type": "image/jpeg" },
+        body: blob
+      }).then(function (up) {
+        if (!up.ok) throw new Error("照片上传被拒 HTTP " + up.status);
+        return fetch(CFG.proxy + "/rest/v1/photos", {
+          method: "POST",
+          headers: {
+            apikey: headers.apikey,
+            Authorization: headers.Authorization,
+            "Content-Type": "application/json",
+            Prefer: "return=minimal"
+          },
+          body: JSON.stringify(photoRow(path))
+        });
+      }).then(function (ins) {
+        if (!ins.ok) throw new Error("写入被拒 HTTP " + ins.status);
+        return fetch(CFG.proxy + "/rest/v1/events", {
+          method: "POST",
+          headers: {
+            apikey: headers.apikey,
+            Authorization: headers.Authorization,
+            "Content-Type": "application/json",
+            Prefer: "resolution=merge-duplicates,return=minimal"
+          },
+          body: JSON.stringify({
+            slug: slug,
+            name: $("event").value.trim().slice(0, 60) || defaultName,
+            date: $("date").value || defaultDate
+          })
+        }).catch(function () {});
+      });
+    }).then(function () {
+      clearPhoto();
+      say("已上墙，去大屏幕找这张照片。 / On the wall. Look for it on the big screen.");
+    }).catch(function (err) {
+      say("上传失败：" + ((err && err.message) || "请重试") + " / Upload failed. Try again.");
+    }).then(function () {
+      busy = false;
+      refreshGate();
+    });
   });
+  if (!allowsUpload()) $("preview-banner").hidden = false;
   refreshGate();
 
   if ("serviceWorker" in navigator) {
