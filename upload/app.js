@@ -76,15 +76,23 @@
     img.src = url;
   }
 
+  function isContactOpen() {
+    return $("contact-toggle").getAttribute("aria-expanded") === "true";
+  }
+  function setContactOpen(isOpen) {
+    $("contact-toggle").setAttribute("aria-expanded", isOpen ? "true" : "false");
+    $("contact-panel").hidden = !isOpen;
+    if (!isOpen) $("contact").value = "";
+  }
   function optedContact() {
-    if (!$("contact-on").checked) return "";
+    if (!isContactOpen()) return "";
     return $("contact").value.trim().slice(0, 80);
   }
+  function handleContactToggle() {
+    setContactOpen(!isContactOpen());
+  }
 
-  $("contact-on").addEventListener("change", function () {
-    $("contact-wrap").hidden = !$("contact-on").checked;
-    if (!$("contact-on").checked) $("contact").value = "";
-  });
+  $("contact-toggle").addEventListener("click", handleContactToggle);
 
   function canSubmit() {
     return !busy && !!(selected && $("consent").checked);
@@ -141,9 +149,7 @@
     $("preview").className = "";
     $("caption").value = "";
     $("caption-wrap").hidden = true;
-    $("contact-on").checked = false;
-    $("contact").value = "";
-    $("contact-wrap").hidden = true;
+    setContactOpen(false);
     $("consent").checked = true;
     $("pick-label").textContent = "添加照片 / Add a photo";
   }
