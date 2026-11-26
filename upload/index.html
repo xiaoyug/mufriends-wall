@@ -82,7 +82,14 @@
   }
   #status { min-height: 1.4em; margin: 12px 0 0; font-size: 14px; color: #DFFF2F; }
   .hint { margin: 8px 0 0; font-size: 12px; line-height: 1.45; color: #9a9a9a; }
-  .card { margin-top: 18px; padding: 14px; border: 1px solid #2a2a2a; background: #0a0a0a; }
+  .card {
+    margin-top: 18px;
+    padding: 16px;
+    border: 1.5px solid #DFFF2F;
+    border-radius: 5px 18px 6px 14px;
+    box-shadow: 3px 4px 0 #DFFF2F;
+    background: #0a0a0a;
+  }
   .toggle { display: flex; gap: 12px; align-items: flex-start; font-weight: 700; }
   .toggle input, .consent input { width: 22px; height: 22px; margin-top: 2px; flex: none; accent-color: #DFFF2F; }
   .toggle-copy { font-size: 15px; }
@@ -118,12 +125,14 @@
 </header>
 <p class="lead">上传一张现场照片，它会出现在大屏幕上。<br>Upload one event photo. It appears on the big screen.</p>
 <main>
-  <img id="preview" alt="照片预览 / Photo preview">
-  <label class="field" id="caption-wrap" for="caption" hidden>一句话（可选）<span>Caption (optional)</span>
-    <textarea id="caption" maxlength="140" placeholder="想写在照片旁边的话 / A short note next to the photo"></textarea>
-  </label>
-  <label class="big" id="pick-label" for="photo">添加照片 / Add a photo</label>
-  <input class="file" id="photo" type="file" accept="image/*">
+  <section class="card" id="photo-card" aria-label="照片 / Photo">
+    <img id="preview" alt="照片预览 / Photo preview">
+    <label class="field" id="caption-wrap" for="caption" hidden>一句话（可选）<span>Caption (optional)</span>
+      <textarea id="caption" maxlength="140" placeholder="想写在照片旁边的话 / A short note next to the photo"></textarea>
+    </label>
+    <label class="big" id="pick-label" for="photo">添加照片 / Add a photo</label>
+    <input class="file" id="photo" type="file" accept="image/*">
+  </section>
   <section class="event-row" aria-label="活动 / Event">
     <label class="field" for="event">活动 <span>Event</span>
       <select id="event"></select>
