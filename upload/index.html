@@ -4,11 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>muShenzhen 2026 · 上传照片</title>
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#FAFAED">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="muShenzhen 2026">
 <style>
   :root {
+    --field: #FAFAED;
+    --paper: #FFFFFF;
+    --ink: #212121;
+    --black: #000000;
     --accent: #DFFF2F;
     --card-pad: 16px;
     --card-gap: 12px;
@@ -16,7 +20,7 @@
   * { box-sizing: border-box; }
   #preview-banner[hidden] { display: none; }
   #preview-banner { margin: 0; padding: 10px 18px; background: #DFFF2F; color: #111; font-size: 13px; font-weight: 700; }
-  html, body { margin: 0; background: #000; color: #f4f4f4; }
+  html, body { margin: 0; background: var(--field); color: var(--ink); }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
     line-height: 1.5;
@@ -24,24 +28,29 @@
     margin: 0 auto;
     padding-bottom: calc(36px + env(safe-area-inset-bottom));
   }
-  .poster { background: #000; padding: 28px 28px 10px; text-align: center; }
+  .poster { background: transparent; padding: 28px 28px 10px; text-align: center; }
+  .logo-block {
+    display: inline-block;
+    background: var(--black);
+    padding: 24px;
+  }
   .logo {
     display: block;
-    width: min(260px, 100%);
+    width: min(240px, 100%);
     min-width: 200px;
     height: auto;
     margin: 0 auto;
   }
   .hash, .yearline {
     margin: 26px 0 0;
-    color: #DFFF2F;
+    color: var(--ink);
     font-family: ui-monospace, "SF Mono", Menlo, "Courier New", monospace;
     font-size: 13px;
     font-weight: 700;
     letter-spacing: 0.12em;
   }
   .yearline { margin-top: 4px; font-weight: 500; letter-spacing: 0.08em; }
-  .lead { margin: 0; padding: 18px 18px 0; font-size: 15px; color: #ececec; }
+  .lead { margin: 0; padding: 18px 18px 0; font-size: 15px; color: var(--ink); }
   main { padding: 8px 18px 0; }
   .file { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   .big {
@@ -57,10 +66,10 @@
   .big:focus-visible, button.send:focus-visible, input:focus-visible, textarea:focus-visible {
     outline: 3px solid #DFFF2F; outline-offset: 2px;
   }
-  #preview { display: none; width: auto; max-width: 100%; max-height: 40vh; height: auto; object-fit: contain; margin: 12px auto 0; background: #111; border: 3px solid #DFFF2F; }
+  #preview { display: none; width: auto; max-width: 100%; max-height: 40vh; height: auto; object-fit: contain; margin: 12px auto 0; background: var(--paper); border: 1px solid var(--ink); }
   #preview.show { display: block; }
   label.field { display: block; margin-top: 14px; font-size: 15px; font-weight: 700; }
-  label.field span { display: block; margin-top: 2px; font-size: 12px; font-weight: 400; color: #9a9a9a; }
+  label.field span { display: block; margin-top: 2px; font-size: 12px; font-weight: inherit; color: var(--ink); }
   textarea, input[type="text"], input[type="date"], select {
     display: block; width: 100%;
     margin-top: 8px;
@@ -77,23 +86,23 @@
     gap: 12px;
     margin-top: 18px;
     padding: 14px;
-    border: 1.5px dashed #999;
-    border-radius: 6px;
-    background: #111;
+    border: 1px solid var(--ink);
+    border-radius: 0;
+    background: var(--paper);
   }
   .event-row .field { margin-top: 0; }
   @media (max-width: 520px) {
     .event-row { grid-template-columns: 1fr; }
   }
-  #status { min-height: 1.4em; margin: 12px 0 0; font-size: 14px; color: #DFFF2F; }
-  .hint { margin: 8px 0 0; font-size: 12px; line-height: 1.45; color: #9a9a9a; }
+  #status { min-height: 1.4em; margin: 12px 0 0; font-size: 14px; color: var(--ink); }
+  .hint { margin: 8px 0 0; font-size: 12px; line-height: 1.45; color: var(--ink); }
   .card {
     margin-top: 18px;
-    padding: 16px;
-    border: 1.5px solid #DFFF2F;
-    border-radius: 5px 18px 6px 14px;
-    box-shadow: 3px 4px 0 #DFFF2F;
-    background: #0a0a0a;
+    padding: var(--card-pad);
+    border: 1px solid var(--ink);
+    border-radius: 0;
+    box-shadow: none;
+    background: var(--paper);
   }
   .consent input { width: 22px; height: 22px; margin-top: 2px; flex: none; accent-color: var(--accent); }
   .disclose {
@@ -142,9 +151,9 @@
   footer {
     margin-top: 32px;
     padding: 16px 18px 0;
-    border-top: 1px solid #222;
+    border-top: 1px solid var(--ink);
     text-align: center;
-    color: #8d8d8d;
+    color: var(--ink);
     font-size: 12px;
   }
 </style>
@@ -152,7 +161,9 @@
 <body>
 <p id="preview-banner" hidden>预览模式：不会把照片写入正式活动。 / Preview only — photos are not sent to the live event.</p>
 <header class="poster">
-  <img class="logo" src="mushenzhen-full-green.svg" alt="mushenzhen" width="400" height="150">
+  <div class="logo-block">
+    <img class="logo" src="mushenzhen-full-green.svg" alt="mushenzhen" width="400" height="150">
+  </div>
   <p class="hash">#madeinshenzhen</p>
   <p class="yearline">2026 / MADE — IN — SHENZHEN</p>
 </header>
