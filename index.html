@@ -25,7 +25,8 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body { height: 100%; overflow: hidden; }
   body {
-    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-family: "IBM Plex Sans SC", "PingFang SC", sans-serif;
+    font-weight: 400;
     background-color: var(--field);
     background-image:
       linear-gradient(to top, rgba(223,255,47,.88), rgba(223,255,47,0) 18%),
@@ -36,7 +37,7 @@
     color: var(--ink);
     user-select: none;
   }
-  .mono { font-family: "Chakra Petch", "SF Mono", Menlo, "Courier New", monospace; }
+  .mono { font-family: "IBM Plex Sans SC", "PingFang SC", sans-serif; font-weight: 500; }
 
   /* ---- 顶栏 ---- */
   #header {
@@ -49,7 +50,7 @@
   .kv-block { background: var(--black); color: var(--accent); border-radius: 0; }
   #brand-block { padding: 24px; }
   #event-name {
-    font-family: "Chakra Petch", "PingFang SC", sans-serif;
+    font-family: "IBM Plex Sans SC", "PingFang SC", sans-serif;
     font-size: 22px; font-weight: 600; letter-spacing: 0;
     color: var(--accent); line-height: 1.1; margin-top: 24px;
   }
@@ -154,7 +155,7 @@
     box-shadow: none;
   }
   #qr { background: var(--paper); padding: 8px; }
-  #qr-box .tip { color: var(--accent); font-size: 14px; font-weight: 700; margin-top: 8px; letter-spacing: 1px; }
+  #qr-box .tip { color: var(--accent); font-size: 14px; font-weight: 500; margin-top: 8px; letter-spacing: 0; }
 
   /* ---- 空场提示 ---- */
   #empty {
@@ -170,7 +171,7 @@
     animation: spin 14s linear infinite;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
-  #empty .big { font-size: 34px; font-weight: 900; }
+  #empty .big { font-size: 34px; font-weight: 600; }
   #empty .small { font-size: 17px; letter-spacing: 1px; color: var(--mist); }
 
   /* ---- 装饰：漂浮的星号 ---- */
@@ -188,6 +189,21 @@
   }
   body.managing #mgr-bar { display: block; }
 
+  @font-face {
+    font-family: "IBM Plex Sans SC";
+    src: url("assets/fonts/IBMPlexSansSC-Regular.woff2") format("woff2");
+    font-weight: 400; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: "IBM Plex Sans SC";
+    src: url("assets/fonts/IBMPlexSansSC-Medium.woff2") format("woff2");
+    font-weight: 500; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: "IBM Plex Sans SC";
+    src: url("assets/fonts/IBMPlexSansSC-SemiBold.woff2") format("woff2");
+    font-weight: 600; font-style: normal; font-display: swap;
+  }
   /* ---- 状态灯 ---- */
   /* Hidden unless the connection fails, so the corner is not a stray square. */
   #status {
@@ -206,7 +222,7 @@
     background: var(--field);
     background-image: none;
   }
-  #index h2 { font-size: 42px; font-weight: 600; letter-spacing: 0; font-family: "Chakra Petch", "PingFang SC", sans-serif; }
+  #index h2 { font-size: 42px; font-weight: 600; letter-spacing: 0; font-family: "IBM Plex Sans SC", "PingFang SC", sans-serif; }
   #index .idx-sub { font-size: 15px; color: var(--mist); margin: 10px 0 42px; letter-spacing: 2px; }
   #index-list { display: flex; flex-wrap: wrap; gap: 22px; justify-content: center; max-width: 1100px; }
   .idx-card {
