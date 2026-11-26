@@ -6,13 +6,16 @@
 window.WALL_CONFIG = {
 
   // ---- 活动信息 ----
-  eventName: "MuFriends",             // 顶部大标题
-  slogan: "下一种生活，由你想象 · Life, as you imagine",   // 黑色胶囊标语，留空 "" 则不显示
+  // 本场用 ?e=mushenzhen-2026。不要把照片放进 mufriends-2026-11-06。
+  eventName: "muShenzhen 2026",
+  eventSlug: "mushenzhen-2026",
+  eventDate: "2026-11-29",
+  eventLine: "29 Nov – 18 Dec 2026 · OCT-LOFT C2",
+  slogan: "",                         // 不另写宣传语；空着时本场显示上面的日期和场地
   logoUrl: "",                        // 留空 = 使用内置的 mu 深圳 Logo
-                                      // 也可填图片路径/URL 换成别的 Logo
 
-  // ---- 上传页二维码 ----
-  uploadUrl: "https://xiaoyug.github.io/yu/",   // 「遇」线上地址，右下角自动生成二维码
+  // ---- 上传页二维码（和墙同一域名）----
+  uploadUrl: "https://mufriends.mushenzhen.xyz/upload/",
 
   // ---- Supabase 数据中转（已配好，勿动）----
   // 通过 mufriends.mushenzhen.xyz 的 /proxy/ 反代访问，避免国内直连 supabase.co 不稳定
@@ -28,6 +31,7 @@ window.WALL_CONFIG = {
 
   // ---- 新照片弹窗 ----
   popupMs: 4200,                      // 新照片在大屏中央停留的毫秒数
+  // message 是照片说明，nickname 是客人自愿写下的联系文字。都空着就不显示。
   showNickname: true,
   showMessage: true,
 

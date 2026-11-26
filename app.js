@@ -32,8 +32,14 @@
     if (text) { pill.textContent = text; pill.style.display = "inline-block"; }
     else { pill.style.display = "none"; }
   }
-  renderEventName(CFG.eventName || "照片墙");
-  renderSlogan(CFG.slogan || "");
+  var knownSlug = CFG.eventSlug || "mushenzhen-2026";
+  if (!EVENT_SLUG || EVENT_SLUG === knownSlug) {
+    renderEventName(CFG.eventName || "照片墙");
+    renderSlogan(CFG.slogan || CFG.eventLine || "");
+  } else {
+    renderEventName(EVENT_SLUG);
+    renderSlogan("");
+  }
 
   var logoSrc = CFG.logoUrl || window.WALL_LOGO_BLACK || "";
   if (logoSrc) {
@@ -306,7 +312,13 @@
         if (ev) { applyEvent(ev); next(); return; }
         var now = new Date();
         var today = now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, "0") + "-" + String(now.getDate()).padStart(2, "0");
-        var row = { slug: slug, name: slug, date: today, slogan: "" };
+        var known = slug === (CFG.eventSlug || "mushenzhen-2026");
+        var row = {
+          slug: slug,
+          name: known ? (CFG.eventName || slug) : slug,
+          date: known ? (CFG.eventDate || today) : today,
+          slogan: ""
+        };
         sb.from("events").insert(row).then(function (ins) {
           if (ins.error) console.warn("活动自动建档失败（不影响展示）", ins.error);
           applyEvent(row);
@@ -317,8 +329,13 @@
 
   function applyEvent(ev) {
     currentEvent = ev;
-    if (ev.name) renderEventName(ev.name);
-    renderSlogan(ev.slogan || ev.date || "");
+    var known = ev.slug === (CFG.eventSlug || "mushenzhen-2026");
+    var name = ev.name || "";
+    if (known && (!name || name === ev.slug)) name = CFG.eventName || name;
+    if (name) renderEventName(name);
+    var line = ev.slogan || "";
+    if (!line && known) line = CFG.eventLine || "";
+    renderSlogan(line || ev.date || "");
     // 管理模式的活动编辑表单回填
     if ($("ee-name")) {
       $("ee-name").value = ev.name || "";
