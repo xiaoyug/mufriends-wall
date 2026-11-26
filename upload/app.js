@@ -66,6 +66,7 @@
       $("preview").className = "show";
       $("caption-wrap").hidden = false;
       $("pick-label").textContent = "更换照片 / Change photo";
+      setPhotoActionsVisible(true);
       say("");
       refreshGate();
     };
@@ -150,6 +151,7 @@
     $("caption").value = "";
     $("caption-wrap").hidden = true;
     setContactOpen(false);
+    setPhotoActionsVisible(false);
     $("consent").checked = true;
     $("pick-label").textContent = "添加照片 / Add a photo";
   }
@@ -161,12 +163,48 @@
     else $("gate").textContent = "";
   }
 
+  function setPhotoActionsVisible(isVisible) {
+    $("photo-actions").hidden = !isVisible;
+    $("save-hint").hidden = !isVisible;
+  }
+  function downloadPhoto(file, url) {
+    var link = document.createElement("a");
+    link.href = url;
+    link.download = file.name || "mushenzhen-photo.jpg";
+    link.click();
+  }
+  function shareSelectedPhoto(isSaving) {
+    if (!selected || !previewUrl) return;
+    var file = selected;
+    var canShareFiles = !!(navigator.share && navigator.canShare && navigator.canShare({ files: [file] }));
+    if (!canShareFiles) {
+      downloadPhoto(file, previewUrl);
+      say(isSaving
+        ? "长按照片存储到相册，或使用下载的图片。请选择“存储图像”。 / Touch and hold the photo to save, or use the download. Choose “Save Image”."
+        : "已开始下载这张照片。 / The photo download has started.");
+      return;
+    }
+    navigator.share({ files: [file] }).then(function () {
+      say(isSaving
+        ? "系统菜单已关闭，请确认已选择“存储图像”。 / Menu closed. Please check that you chose “Save Image”."
+        : "分享菜单已关闭。 / Share menu closed.");
+    }).catch(function (error) {
+      if (error && error.name === "AbortError") return;
+      downloadPhoto(file, previewUrl);
+      say("无法打开系统菜单，已改为下载。 / The share menu failed, so the photo was downloaded.");
+    });
+  }
+  function handleSaveClick() { shareSelectedPhoto(true); }
+  function handleShareClick() { shareSelectedPhoto(false); }
+
   $("photo").addEventListener("change", function (event) {
     var file = event.target.files && event.target.files[0];
     event.target.value = "";
     if (!file || busy) return;
     showPreview(file);
   });
+  $("save").addEventListener("click", handleSaveClick);
+  $("share").addEventListener("click", handleShareClick);
   $("consent").addEventListener("change", refreshGate);
   $("send").addEventListener("click", function () {
     if (!canSubmit()) { refreshGate(); return; }

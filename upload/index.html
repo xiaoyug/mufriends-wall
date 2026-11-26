@@ -111,7 +111,21 @@
   .disclose::before { content: "▼ "; }
   .disclose[aria-expanded="true"]::before { content: "▲ "; }
   .disclose:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
-  #contact-panel[hidden] { display: none; }
+  #contact-panel[hidden], #photo-actions[hidden], #save-hint[hidden] { display: none; }
+  .photo-actions { display: grid; grid-template-columns: 1fr 1fr; gap: var(--card-gap); margin-top: var(--card-gap); }
+  .btn {
+    padding: 12px 8px;
+    border: 1.5px solid var(--accent);
+    border-radius: 5px 14px 6px 12px;
+    box-shadow: 2px 3px 0 var(--accent);
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
   #contact-panel { margin-top: var(--card-gap); }
   .consent { display: flex; gap: 12px; align-items: flex-start; margin-top: 18px; font-size: 14px; }
   button.send {
@@ -150,6 +164,11 @@
     </label>
     <label class="big" id="pick-label" for="photo">添加照片 / Add a photo</label>
     <input class="file" id="photo" type="file" accept="image/*">
+    <div class="photo-actions" id="photo-actions" hidden>
+      <button type="button" class="btn" id="save">保存到相册 / Save to album</button>
+      <button type="button" class="btn" id="share">分享 / Post</button>
+    </div>
+    <p class="hint" id="save-hint" hidden>保存会打开系统菜单，请选择“存储图像”。<br>To save, choose “Save Image” in the system menu.</p>
   </section>
   <section class="event-row" aria-label="活动 / Event">
     <label class="field" for="event">活动 <span>Event</span>
