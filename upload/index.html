@@ -53,6 +53,7 @@
   }
   #caption-wrap[hidden] { display: none; }
   #status { min-height: 1.4em; margin: 12px 0 0; font-size: 14px; color: #ddd; }
+  .hint { margin: 8px 0 0; font-size: 12px; color: #aaa; }
   footer {
     margin-top: 28px;
     padding: 16px 18px 0;
@@ -76,6 +77,13 @@
   </label>
   <label class="big" id="pick-label" for="photo">添加照片 / Add a photo</label>
   <input class="file" id="photo" type="file" accept="image/*">
+  <label class="field" for="event">活动名称 <span>Event name</span>
+    <input id="event" type="text" maxlength="60" autocomplete="off">
+  </label>
+  <label class="field" for="date">日期 <span>Date</span>
+    <input id="date" type="date">
+  </label>
+  <p class="hint" id="slug-line"></p>
   <p id="status" role="status" aria-live="polite"></p>
 </main>
 <footer>

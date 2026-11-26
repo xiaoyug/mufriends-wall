@@ -1,10 +1,55 @@
 /* 上传页行为。样式在 index.html。
- * 这一步只负责选照片和预览，还不上传。
+ * 选照片、预览、可选说明、活动名称和日期。还不上墙。
  */
 (function () {
   var $ = function (id) { return document.getElementById(id); };
+  var CFG = window.UPLOAD_CONFIG;
   var selected = null;
   var previewUrl = "";
+
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+  function today() {
+    var now = new Date();
+    return now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate());
+  }
+  function cleanSlug(raw) {
+    if (!raw || raw.length > 80) return "";
+    if (!/^[\w\u4e00-\u9fff-]+$/.test(raw)) return "";
+    return raw;
+  }
+
+  var params = new URLSearchParams(location.search);
+  var requested = cleanSlug(params.get("e") || "");
+  var slug = requested || CFG.defaultSlug;
+  var branded = slug === CFG.defaultSlug;
+  var defaultName = branded ? CFG.eventName : slug;
+  var defaultDate = branded ? CFG.eventDate : today();
+
+  function prefill(name, date) {
+    if (!$("event").dataset.touched) $("event").value = name || "";
+    if (!$("date").dataset.touched) $("date").value = date || "";
+  }
+  $("event").addEventListener("input", function () { $("event").dataset.touched = "1"; });
+  $("date").addEventListener("input", function () { $("date").dataset.touched = "1"; });
+  prefill(defaultName, defaultDate);
+  $("slug-line").textContent = "照片只进入这一场 / Photos stay on: " + slug;
+  if (!requested && params.get("e")) {
+    say("活动链接无效，已改用 muShenzhen 2026。 / That event link was not valid. Using muShenzhen 2026.");
+  }
+
+  fetch(CFG.proxy + "/rest/v1/events?slug=eq." + encodeURIComponent(slug) + "&select=name,date", {
+    headers: {
+      apikey: CFG.anonKey,
+      Authorization: "Bearer " + CFG.anonKey,
+      Accept: "application/json"
+    }
+  }).then(function (res) {
+    return res.ok ? res.json() : [];
+  }).then(function (rows) {
+    var ev = rows && rows[0];
+    if (!ev) return;
+    prefill(ev.name, ev.date);
+  }).catch(function () {});
 
   function say(text) {
     $("status").textContent = text;
