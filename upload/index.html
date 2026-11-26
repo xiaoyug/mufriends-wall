@@ -11,74 +11,79 @@
   * { box-sizing: border-box; }
   #preview-banner[hidden] { display: none; }
   #preview-banner { margin: 0; padding: 10px 18px; background: #e0f050; color: #111; font-size: 13px; font-weight: 700; }
-  html, body { margin: 0; background: #000; color: #f5f5f5; }
+  html, body { margin: 0; background: #000; color: #f4f4f4; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
     line-height: 1.5;
-    max-width: 560px;
+    max-width: 520px;
     margin: 0 auto;
-    padding-bottom: calc(28px + env(safe-area-inset-bottom));
+    padding-bottom: calc(36px + env(safe-area-inset-bottom));
   }
-  .poster { background: #000; padding: 18px 12px 8px; text-align: center; }
+  .poster { background: #000; padding: 12px 8px 0; text-align: center; }
   .poster img { width: 100%; height: auto; display: block; }
   .hash {
-    margin: 4px 0 0;
+    margin: 2px 0 0;
     color: #e0f050;
     font-family: ui-monospace, "SF Mono", Menlo, "Courier New", monospace;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 700;
-    letter-spacing: 1px;
+    letter-spacing: 0.14em;
   }
-  .lead { margin: 0; padding: 16px 18px 0; font-size: 15px; color: #eee; }
-  main { padding: 16px 18px 0; }
+  .lead { margin: 0; padding: 18px 18px 0; font-size: 15px; color: #ececec; }
+  main { padding: 8px 18px 0; }
   .file { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   .big {
     display: block; width: 100%;
-    margin-top: 14px;
-    padding: 18px 12px;
+    margin-top: 16px;
+    padding: 20px 12px;
     background: #e0f050; color: #111;
-    border: 3px solid #e0f050;
-    font: inherit; font-size: 18px; font-weight: 800; text-align: center;
+    border: 0;
+    font: inherit; font-size: 20px; font-weight: 800; text-align: center;
+    letter-spacing: 0.02em;
     cursor: pointer;
   }
-  #preview { display: none; width: 100%; height: auto; margin-top: 14px; background: #111; }
+  .big:focus-visible, button.send:focus-visible, input:focus-visible, textarea:focus-visible {
+    outline: 3px solid #e0f050; outline-offset: 2px;
+  }
+  #preview { display: none; width: 100%; height: auto; margin-top: 16px; background: #111; border: 3px solid #e0f050; }
   #preview.show { display: block; }
-  label.field { display: block; margin-top: 12px; font-size: 15px; font-weight: 700; }
-  label.field span { display: block; font-size: 12px; font-weight: 400; color: #aaa; }
+  label.field { display: block; margin-top: 14px; font-size: 15px; font-weight: 700; }
+  label.field span { display: block; margin-top: 2px; font-size: 12px; font-weight: 400; color: #9a9a9a; }
   textarea, input[type="text"], input[type="date"] {
     display: block; width: 100%;
-    margin-top: 6px;
-    padding: 11px 12px;
+    margin-top: 8px;
+    padding: 12px;
     font: inherit; font-size: 16px;
     color: #111; background: #fff;
-    border: 2px solid #111; border-radius: 0;
+    border: 0; border-radius: 0;
   }
+  textarea { min-height: 88px; resize: vertical; }
   #caption-wrap[hidden] { display: none; }
-  #status { min-height: 1.4em; margin: 12px 0 0; font-size: 14px; color: #ddd; }
-  .hint { margin: 8px 0 0; font-size: 12px; color: #aaa; }
-  .card { margin-top: 16px; padding: 12px; border: 2px solid #333; }
-  .toggle { display: flex; gap: 10px; align-items: flex-start; font-weight: 700; }
-  .toggle input { width: 22px; height: 22px; margin-top: 2px; flex: none; }
+  #status { min-height: 1.4em; margin: 12px 0 0; font-size: 14px; color: #e0f050; }
+  .hint { margin: 8px 0 0; font-size: 12px; line-height: 1.45; color: #9a9a9a; }
+  .card { margin-top: 18px; padding: 14px; border: 1px solid #2a2a2a; background: #0a0a0a; }
+  .toggle { display: flex; gap: 12px; align-items: flex-start; font-weight: 700; }
+  .toggle input, .consent input { width: 22px; height: 22px; margin-top: 2px; flex: none; accent-color: #e0f050; }
   .toggle-copy { font-size: 15px; }
-  .toggle-copy span { display: block; font-size: 12px; font-weight: 400; color: #aaa; }
+  .toggle-copy span { display: block; margin-top: 2px; font-size: 12px; font-weight: 400; color: #9a9a9a; }
   #contact-wrap[hidden] { display: none; }
-  .consent { display: flex; gap: 12px; align-items: flex-start; margin-top: 16px; font-size: 14px; }
-  .consent input { width: 22px; height: 22px; margin-top: 2px; flex: none; }
+  .consent { display: flex; gap: 12px; align-items: flex-start; margin-top: 18px; font-size: 14px; }
   button.send {
     display: block; width: 100%;
-    margin-top: 14px;
-    padding: 14px 12px;
-    background: #111; color: #fff;
-    border: 3px solid #e0f050;
-    font: inherit; font-size: 16px; font-weight: 800;
+    margin-top: 16px;
+    padding: 16px 12px;
+    background: #e0f050; color: #111;
+    border: 0;
+    font: inherit; font-size: 17px; font-weight: 800;
+    cursor: pointer;
   }
-  button.send:disabled { opacity: 0.45; }
+  button.send:disabled { opacity: 0.38; cursor: not-allowed; }
   footer {
-    margin-top: 28px;
+    margin-top: 32px;
     padding: 16px 18px 0;
     border-top: 1px solid #222;
     text-align: center;
-    color: #9a9a9a;
+    color: #8d8d8d;
     font-size: 12px;
   }
 </style>
