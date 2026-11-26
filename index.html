@@ -5,38 +5,68 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>muShenzhen 2026 · 照片墙</title>
 <style>
+  @font-face {
+    font-family: "Chakra Petch";
+    src: url("assets/fonts/ChakraPetch-SemiBold.ttf") format("truetype");
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+  }
+  :root {
+    --field: #FFFFFF;
+    --ink: #212121;
+    --black: #000000;
+    --accent: #DFFF2F;
+    --support: #5456BE;
+    --mist: #5c6564;
+    --paper: #FFFFFF;
+    --space: 28px;
+  }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body { height: 100%; overflow: hidden; }
   body {
-    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
-    background: #fbfaf5;
-    color: #111;
+    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    background-color: var(--field);
+    background-image:
+      linear-gradient(to top, rgba(223,255,47,.9), rgba(223,255,47,0) 22%),
+      linear-gradient(rgba(255,255,255,.55), rgba(255,255,255,.55)),
+      url("kv-bg.jpg");
+    background-repeat: no-repeat;
+    background-size: auto, auto, cover;
+    background-position: center bottom, center, center top;
+    color: var(--ink);
     user-select: none;
   }
-  .mono { font-family: "SF Mono", Menlo, "Courier New", monospace; }
+  .mono { font-family: "Chakra Petch", "SF Mono", Menlo, "Courier New", monospace; }
 
   /* ---- 顶栏 ---- */
   #header {
     position: fixed; top: 0; left: 0; right: 0; z-index: 10;
     display: flex; align-items: flex-start; justify-content: space-between;
-    padding: 26px 36px 0;
+    padding: var(--space) 36px 0;
     pointer-events: none;
   }
-  #title-block { display: flex; flex-direction: column; gap: 10px; }
+  #title-block { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+  .kv-block { background: var(--black); color: var(--accent); border-radius: 0; }
+  #brand-block { padding: 24px; }
   #event-name {
-    font-size: 64px; font-weight: 900; letter-spacing: -1px;
-    color: #111; line-height: 1;
+    font-family: "Chakra Petch", "PingFang SC", sans-serif;
+    font-size: 22px; font-weight: 600; letter-spacing: 0;
+    color: var(--accent); line-height: 1.1; margin-top: 24px;
   }
-  #event-name .ch { display: inline-block; }
+  #date-block {
+    font-family: "Chakra Petch", "PingFang SC", sans-serif;
+    font-size: 28px; font-weight: 600; letter-spacing: 0.04em;
+    padding: 12px 16px; line-height: 1;
+  }
   #slogan-pill {
     display: none;
     align-self: flex-start;
-    background: #111; color: #fff;
-    font-size: 18px; letter-spacing: 1px;
-    padding: 8px 18px; border-radius: 999px;
-    transform: rotate(-1.2deg);
+    background: transparent; color: var(--ink);
+    font-size: 16px; letter-spacing: 0; font-weight: 600;
+    padding: 0; border-radius: 0;
   }
-  #logo { width: 150px; height: auto; display: none; }
+  #logo { width: 240px; min-width: 200px; height: auto; display: block; }
 
   /* ---- 滚动区 ---- */
   #wall {
@@ -50,17 +80,18 @@
   .cell {
     display: inline-block; vertical-align: top;
     position: relative;
-    background: #fff;
-    border: 3px solid #111;
-    padding: 8px 8px 10px;
-    box-shadow: 7px 7px 0 rgba(17,17,17,.9);
-    transform: rotate(var(--tilt, 0deg));
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    border-radius: 0;
+    padding: 6px;
+    box-shadow: none;
+    transform: none;
   }
   .cell img { height: 100%; width: auto; max-width: none; object-fit: cover; display: block; background: #eee; }
   .cell .del {
     position: absolute; top: -14px; right: -14px;
-    width: 34px; height: 34px; border-radius: 50%;
-    background: #e23e3e; color: #fff; border: 3px solid #111;
+    width: 34px; height: 34px; border-radius: 0;
+    background: var(--accent); color: var(--black); border: 3px solid var(--black);
     font-size: 17px; font-weight: 700; line-height: 28px; text-align: center;
     cursor: pointer; display: none; z-index: 3;
     box-shadow: 3px 3px 0 rgba(17,17,17,.9);
@@ -71,43 +102,35 @@
   #popup {
     position: fixed; inset: 0; z-index: 50;
     display: flex; align-items: center; justify-content: center;
-    background: rgba(251,250,245,.72);
+    background: rgba(255,255,255,.78);
     opacity: 0; pointer-events: none;
     transition: opacity .3s ease;
   }
   #popup.show { opacity: 1; }
   #popup-card {
     position: relative;
-    background: #fff; border: 4px solid #111;
-    padding: 20px 20px 26px;
+    background: var(--paper); border: 1px solid var(--ink);
+    padding: 16px 16px 20px;
     max-width: 58vw; text-align: center;
-    box-shadow: 14px 14px 0 rgba(17,17,17,.9);
-    transform: scale(.8) rotate(-2deg);
+    box-shadow: none; border-radius: 0;
+    transform: scale(.8);
     transition: transform .35s cubic-bezier(.2,1.5,.4,1);
   }
-  #popup.show #popup-card { transform: scale(1) rotate(-2deg); }
-  #popup-card::before {
-    content: ""; position: absolute; top: -18px; left: 50%;
-    width: 130px; height: 34px; margin-left: -65px;
-    background: rgba(247,215,8,.85);
-    border: 2px solid rgba(17,17,17,.25);
-    transform: rotate(-1.5deg);
-  }
+  #popup.show #popup-card { transform: scale(1); }
   #popup-card img {
     max-width: 100%; max-height: 60vh;
     display: block; margin: 0 auto;
-    border: 3px solid #111;
+    border: 1px solid var(--ink);
   }
   #popup-nick {
     display: inline-block; margin-top: 16px;
-    background: #111; color: #fff;
+    background: var(--black); color: var(--accent);
     font-size: 22px; letter-spacing: 1px;
-    padding: 6px 16px; border-radius: 999px;
-    transform: rotate(-.8deg);
+    padding: 6px 16px; border-radius: 0;
   }
   #popup-nick:empty { display: none; }
   #popup-msg {
-    font-size: 22px; font-weight: 700; color: #111;
+    font-size: 22px; font-weight: 700; color: var(--ink);
     margin-top: 10px; line-height: 1.5;
     max-width: 52vw; word-break: break-word; white-space: pre-wrap;
   }
@@ -116,29 +139,29 @@
   /* ---- 右下角上传二维码 ---- */
   #qr-box {
     position: fixed; right: 26px; bottom: 26px; z-index: 20;
-    background: #fff; border: 3px solid #111; border-radius: 4px;
-    padding: 12px 12px 8px; text-align: center; display: none;
-    box-shadow: 6px 6px 0 rgba(17,17,17,.9);
-    transform: rotate(1.2deg);
+    background: var(--black); border: 0; border-radius: 0;
+    padding: 12px; text-align: center; display: none;
+    box-shadow: none;
   }
-  #qr-box .tip { color: #111; font-size: 14px; font-weight: 700; margin-top: 8px; letter-spacing: 1px; }
+  #qr { background: var(--paper); padding: 8px; }
+  #qr-box .tip { color: var(--accent); font-size: 14px; font-weight: 700; margin-top: 8px; letter-spacing: 1px; }
 
   /* ---- 空场提示 ---- */
   #empty {
     position: fixed; inset: 0; z-index: 5;
     display: none; align-items: center; justify-content: center;
-    flex-direction: column; gap: 18px; color: #111;
+    flex-direction: column; gap: 18px; color: var(--ink);
   }
   #empty .ring {
-    width: 150px; height: 150px; border-radius: 50%;
-    border: 4px dashed #111;
+    width: 150px; height: 150px; border-radius: 0;
+    border: 4px solid var(--black);
     display: flex; align-items: center; justify-content: center;
     font-size: 56px;
     animation: spin 14s linear infinite;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
   #empty .big { font-size: 34px; font-weight: 900; }
-  #empty .small { font-size: 17px; letter-spacing: 1px; color: #555; }
+  #empty .small { font-size: 17px; letter-spacing: 1px; color: var(--mist); }
 
   /* ---- 装饰：漂浮的星号 ---- */
   .spark {
@@ -148,9 +171,9 @@
 
   /* ---- 管理提示条 ---- */
   #mgr-bar {
-    position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%) rotate(-.6deg);
-    z-index: 40; background: #111; color: #fff;
-    padding: 10px 22px; border-radius: 999px; font-size: 15px;
+    position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%);
+    z-index: 40; background: var(--black); color: var(--accent);
+    padding: 10px 22px; border-radius: 0; font-size: 15px;
     display: none;
   }
   body.managing #mgr-bar { display: block; }
@@ -158,53 +181,58 @@
   /* ---- 状态灯 ---- */
   #status {
     position: fixed; left: 16px; bottom: 16px; z-index: 20;
-    width: 12px; height: 12px; border-radius: 50%;
-    background: #999; border: 2px solid #111; opacity: .8;
+    width: 12px; height: 12px; border-radius: 0;
+    background: var(--mist); border: 2px solid var(--paper); opacity: .8;
   }
-  #status.ok { background: #2fa96b; }
-  #status.err { background: #e23e3e; }
+  #status.ok { background: var(--accent); }
+  #status.err { background: var(--support); }
 
   /* ---- 活动索引页 ---- */
   #index {
     position: fixed; inset: 0; z-index: 30;
     display: none; flex-direction: column; align-items: center;
     padding: 15vh 24px 40px; overflow-y: auto;
-    background: #fbfaf5;
+    background: var(--field);
+    background-image: none;
   }
-  #index h2 { font-size: 42px; font-weight: 900; letter-spacing: -1px; }
-  #index .idx-sub { font-size: 15px; color: #555; margin: 10px 0 42px; letter-spacing: 2px; }
+  #index h2 { font-size: 42px; font-weight: 600; letter-spacing: 0; font-family: "Chakra Petch", "PingFang SC", sans-serif; }
+  #index .idx-sub { font-size: 15px; color: var(--mist); margin: 10px 0 42px; letter-spacing: 2px; }
   #index-list { display: flex; flex-wrap: wrap; gap: 22px; justify-content: center; max-width: 1100px; }
   .idx-card {
     display: block; width: 300px; padding: 22px 24px;
-    background: #fff; border: 3px solid #111; text-decoration: none; color: #111;
-    box-shadow: 6px 6px 0 rgba(17,17,17,.9);
-    transform: rotate(-.8deg); transition: transform .15s ease;
+    background: var(--paper); border: 1px solid var(--ink); text-decoration: none; color: var(--ink);
+    box-shadow: none;
+    border-radius: 0;
   }
-  .idx-card:nth-child(2n) { transform: rotate(1deg); }
-  .idx-card:hover { transform: rotate(0) translateY(-4px); background: #f9f463; }
+  .idx-card:hover { background: var(--black); color: var(--accent); }
   .idx-name { font-size: 24px; font-weight: 800; word-break: break-word; }
-  .idx-meta { font-size: 13px; color: #555; margin-top: 10px; }
-  .idx-empty { font-size: 18px; color: #555; padding: 30px; }
-  #index .idx-tip { margin-top: 48px; font-size: 14px; color: #555; text-align: center; line-height: 1.8; }
+  .idx-meta { font-size: 13px; color: var(--mist); margin-top: 10px; }
+  .idx-card:hover .idx-meta { color: var(--accent); }
+  .idx-empty { font-size: 18px; color: var(--mist); padding: 30px; }
+  #index .idx-tip { margin-top: 48px; font-size: 14px; color: var(--mist); text-align: center; line-height: 1.8; }
 
   /* ---- 管理模式：活动编辑 ---- */
   #event-editor {
-    position: fixed; left: 50%; bottom: 74px; transform: translateX(-50%) rotate(.4deg);
-    z-index: 40; background: #fff; border: 3px solid #111;
-    box-shadow: 6px 6px 0 rgba(17,17,17,.9);
+    position: fixed; left: 50%; bottom: 74px; transform: translateX(-50%);
+    z-index: 40; background: var(--paper); border: 1px solid var(--ink);
+    box-shadow: none;
     padding: 16px 20px; display: none; gap: 8px;
-    font-size: 14px; color: #111;
+    font-size: 14px; color: var(--ink); border-radius: 0;
   }
   body.managing #event-editor[data-active] { display: block; }
   #event-editor .ee-title { font-weight: 800; margin-bottom: 8px; }
   #event-editor label { display: block; margin-bottom: 8px; font-weight: 600; }
   #event-editor input {
     width: 260px; margin-left: 8px; padding: 5px 8px;
-    border: 2px solid #111; font: inherit;
+    border: 2px solid var(--ink); font: inherit; background: var(--paper); color: var(--ink);
   }
   #event-editor button {
     margin-top: 4px; padding: 7px 18px; font: inherit; font-weight: 700;
-    background: #111; color: #fff; border: 2px solid #111; cursor: pointer;
+    background: var(--accent); color: var(--black); border: 2px solid var(--black); cursor: pointer;
+  }
+  #credit {
+    position: fixed; left: 36px; bottom: 12px; z-index: 20;
+    color: var(--black); font-size: 12px; background: var(--paper); padding: 2px 6px;
   }
 </style>
 </head>
@@ -212,10 +240,13 @@
 
 <div id="header">
   <div id="title-block">
-    <div id="event-name"></div>
+    <div id="brand-block" class="kv-block">
+      <img id="logo" alt="mushenzhen" width="400" height="150">
+      <div id="event-name"></div>
+    </div>
+    <div id="date-block" class="kv-block">11.29 - 12.18</div>
     <div id="slogan-pill" class="mono"></div>
   </div>
-  <img id="logo" alt="mu shenzhen">
 </div>
 
 <div id="wall"></div>
@@ -242,7 +273,7 @@
 </div>
 
 <div id="index">
-  <h2>照片墙 · Paper Wall</h2>
+  <h2>mushenzhen · 照片墙</h2>
   <p class="idx-sub mono">活动索引 · All events</p>
   <div id="index-list"></div>
   <p class="idx-tip">开新活动：直接访问 ?e=活动名，自动建档 · New event: just open ?e=your-event</p>
@@ -257,10 +288,10 @@
 </div>
 
 <div id="mgr-bar" class="mono">管理模式：点照片上的 ✕ 删除 · 再按一次 M 退出 ｜ Manage: tap ✕ to delete · press M to exit</div>
+<p id="credit">视觉素材来源：mushenzhen</p>
 <div id="status"></div>
 
 <script src="vendor/qrcode.min.js"></script>
-<script src="logo-data.js"></script>
 <script src="config.js"></script>
 <script src="app.js"></script>
 </body>

@@ -14,18 +14,9 @@
   })();
   if (EVENT_SLUG) $("event-editor").dataset.active = "1";   // 活动编辑表单只在活动页的管理模式出现
 
-  // ---------- 顶栏：活动名（逐字微旋转，海报感）+ 标语胶囊 + Logo ----------
-  var tilts = [-2.5, 1.8, -1.2, 2.2, -1.8, 1.4, -2, 2.6, -1.5, 1.9];
+  // ---------- 顶栏：活动名 + 日期场地 + 官方 logo ----------
   function renderEventName(name) {
-    var nameEl = $("event-name");
-    nameEl.innerHTML = "";
-    name.split("").forEach(function (ch, i) {
-      var s = document.createElement("span");
-      s.className = "ch";
-      s.textContent = ch;
-      s.style.transform = "rotate(" + tilts[i % tilts.length] + "deg) translateY(" + ((i % 2) ? -3 : 2) + "px)";
-      nameEl.appendChild(s);
-    });
+    $("event-name").textContent = name || "";
   }
   function renderSlogan(text) {
     var pill = $("slogan-pill");

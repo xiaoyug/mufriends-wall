@@ -12,7 +12,7 @@ window.WALL_CONFIG = {
   eventDate: "2026-11-29",
   eventLine: "29 Nov – 18 Dec 2026 · OCT-LOFT C2",
   slogan: "",                         // 不另写宣传语；空着时本场显示上面的日期和场地
-  logoUrl: "",                        // 留空 = 使用内置的 mu 深圳 Logo
+  logoUrl: "assets/mushenzhen-full-green.svg",  // 官方 full logo，不使用 logo-data.js
 
   // ---- 上传页二维码（和墙同一域名）----
   uploadUrl: "https://mufriends.mushenzhen.xyz/upload/",
@@ -35,8 +35,8 @@ window.WALL_CONFIG = {
   showNickname: true,
   showMessage: true,
 
-  // ---- 外观（mu 深圳海报语言：白底 + 黑描边 + 硬投影）----
-  palette: ["#e23e3e", "#f7d708", "#2fa96b", "#e583b8", "#2e9bd6", "#7b5ea7", "#e8833a"],
+  // 数字深色场地只用这几个颜色。#212121 是界面墨色，不是 logo 黑。
+  palette: ["#DFFF2F", "#5456BE", "#ACC0BF", "#FFFFFF"],
   gap: 26,                            // 照片间距
 
   // ---- demo 模式 ----
