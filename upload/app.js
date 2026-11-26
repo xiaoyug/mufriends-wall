@@ -9,52 +9,47 @@
   var previewUrl = "";
   var busy = false;
 
-  function pad(n) { return (n < 10 ? "0" : "") + n; }
-  function today() {
-    var now = new Date();
-    return now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate());
-  }
   function cleanSlug(raw) {
     if (!raw || raw.length > 80) return "";
     if (!/^[\w\u4e00-\u9fff-]+$/.test(raw)) return "";
     return raw;
   }
 
+  var events = (CFG.events && CFG.events.length) ? CFG.events : [
+    { slug: CFG.defaultSlug, name: CFG.eventName, date: CFG.eventDate }
+  ];
+  function eventBySlug(value) {
+    for (var i = 0; i < events.length; i++) if (events[i].slug === value) return events[i];
+    return null;
+  }
+  var eventSelect = $("event");
+  events.forEach(function (ev) {
+    var opt = document.createElement("option");
+    opt.value = ev.slug;
+    opt.textContent = ev.name;
+    eventSelect.appendChild(opt);
+  });
+
   var params = new URLSearchParams(location.search);
   var requested = cleanSlug(params.get("e") || "");
-  var slug = requested || CFG.defaultSlug;
-  if (slug === "mufriends-2026-11-06") slug = CFG.defaultSlug;
-  var branded = slug === CFG.defaultSlug;
-  var defaultName = branded ? CFG.eventName : slug;
-  var defaultDate = branded ? CFG.eventDate : today();
-
-  function prefill(name, date) {
-    if (!$("event").dataset.touched) $("event").value = name || "";
-    if (!$("date").dataset.touched) $("date").value = date || "";
-  }
-  $("event").addEventListener("input", function () { $("event").dataset.touched = "1"; });
+  if (requested === "mufriends-2026-11-06") requested = "";
+  var chosen = eventBySlug(requested) || eventBySlug(CFG.defaultSlug) || events[0];
+  var slug = chosen.slug;
+  eventSelect.value = chosen.slug;
+  $("date").value = chosen.date;
   $("date").addEventListener("input", function () { $("date").dataset.touched = "1"; });
-  prefill(defaultName, defaultDate);
+  eventSelect.addEventListener("change", function () {
+    var next = eventBySlug(eventSelect.value) || events[0];
+    slug = next.slug;
+    if (!$("date").dataset.touched) $("date").value = next.date;
+    $("slug-line").textContent = "照片只进入这一场 / Photos stay on: " + slug;
+  });
   $("slug-line").textContent = "照片只进入这一场 / Photos stay on: " + slug;
-  if (requested === "mufriends-2026-11-06") {
+  if (params.get("e") === "mufriends-2026-11-06") {
     say("这是 11 月 6 日的旧活动，照片会进入 muShenzhen 2026。 / That link is the 6 Nov event. Photos go to muShenzhen 2026.");
-  } else if (!requested && params.get("e")) {
+  } else if (requested && !eventBySlug(requested)) {
     say("活动链接无效，已改用 muShenzhen 2026。 / That event link was not valid. Using muShenzhen 2026.");
   }
-
-  fetch(CFG.proxy + "/rest/v1/events?slug=eq." + encodeURIComponent(slug) + "&select=name,date", {
-    headers: {
-      apikey: CFG.anonKey,
-      Authorization: "Bearer " + CFG.anonKey,
-      Accept: "application/json"
-    }
-  }).then(function (res) {
-    return res.ok ? res.json() : [];
-  }).then(function (rows) {
-    var ev = rows && rows[0];
-    if (!ev) return;
-    prefill(ev.name, ev.date);
-  }).catch(function () {});
 
   function say(text) {
     $("status").textContent = text;
@@ -208,8 +203,8 @@
           },
           body: JSON.stringify({
             slug: slug,
-            name: $("event").value.trim().slice(0, 60) || defaultName,
-            date: $("date").value || defaultDate
+            name: (eventBySlug(slug) || events[0]).name,
+            date: $("date").value || (eventBySlug(slug) || events[0]).date
           })
         }).catch(function () {});
       });

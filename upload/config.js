@@ -5,5 +5,8 @@ window.UPLOAD_CONFIG = {
   defaultSlug: "mushenzhen-2026",
   eventName: "muShenzhen 2026",
   eventDate: "2026-11-29",
-  version: "upload v1"
+  events: [
+    { slug: "mushenzhen-2026", name: "muShenzhen 2026", date: "2026-11-29" }
+  ],
+  version: "upload v2"
 };

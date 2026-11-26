@@ -56,7 +56,7 @@
   #preview.show { display: block; }
   label.field { display: block; margin-top: 14px; font-size: 15px; font-weight: 700; }
   label.field span { display: block; margin-top: 2px; font-size: 12px; font-weight: 400; color: #9a9a9a; }
-  textarea, input[type="text"], input[type="date"] {
+  textarea, input[type="text"], input[type="date"], select {
     display: block; width: 100%;
     margin-top: 8px;
     padding: 12px;
@@ -110,8 +110,8 @@
   </label>
   <label class="big" id="pick-label" for="photo">添加照片 / Add a photo</label>
   <input class="file" id="photo" type="file" accept="image/*">
-  <label class="field" for="event">活动名称 <span>Event name</span>
-    <input id="event" type="text" maxlength="60" autocomplete="off">
+  <label class="field" for="event">活动 <span>Event</span>
+    <select id="event"></select>
   </label>
   <label class="field" for="date">日期 <span>Date</span>
     <input id="date" type="date">
