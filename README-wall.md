@@ -3,7 +3,7 @@
 活动现场 / 线上活动的滚动照片墙大屏页。纯静态、无构建、无框架，和「遇」同一套技术路线。
 
 - 🖥️ **本仓库就是大屏页**：多行照片无缝滚动，新照片先弹窗展示（昵称 + 留言）再汇入滚动流
-- 📱 **上传页另做**（基于「遇」改造）：两个页面通过 Supabase 免费云端串联，不需要自己的服务器
+- 📱 **上传页在本目录 `upload/`**，部署后是 `https://mufriends.mushenzhen.xyz/upload/`。只上传照片，不生成带个人二维码的话题卡
 - 🎛️ 按 `M` 键进入管理模式，可删除乱传的照片
 
 ## 文件说明
@@ -21,23 +21,25 @@ server.js           本地预览用（部署时不需要）
 
 照片墙支持多场活动复用，**新活动零部署**：
 
-- **开新活动**：直接打开 `https://mufriends.mushenzhen.xyz/?e=活动英文代号`（如 `?e=mu-meetup-01`），
-  首次访问自动建档。右下角二维码会自动带上该活动参数，观众扫码上传的照片只进这场活动
+- **这场活动**：打开 `https://mufriends.mushenzhen.xyz/?e=mushenzhen-2026`。
+  不要用 `mufriends-2026-11-06`。右下角二维码会带上 `?e=`，指向同域名的 `/upload/`
+- **另开一场**：打开 `?e=活动代号`，首次访问自动建档，照片按代号隔离
 - **改活动名称 / 日期 / 标语**：在活动页按 `M` 进管理模式 → 左上角出现编辑表单 → 保存
 - **活动索引**：打开根地址 `https://mufriends.mushenzhen.xyz/`（不带参数）会列出所有活动，点卡片进入对应活动
 - **数据隔离**：每张照片带 `event` 字段，各活动互不可见；旧照片默认归 `mufriends-2026-11-06`
 
 数据库迁移（升级到多活动前执行一次）：Supabase Dashboard → SQL Editor → 粘贴执行 `supabase-events-migration.sql`。
 
-上传页「遇」侧：在链接后加 `?e=同一代号`（如 `https://xiaoyug.github.io/yu/?e=mu-meetup-01`），
-会自动预填活动名和日期；不带参数时按「活动名-日期」自动生成代号。
+观众上传页是 `upload/`。说明写在照片的 `message`，自愿填写的联系文字写在 `nickname`。两个都空着时大屏不显示文字。
+
+上场前执行仓库里的 `sql/mushenzhen-2026-rls.sql`（不要在这个 PR 里直接改线上库）。
 
 ## 三分钟配置
 
 打开 `config.js`，填三处：
 
 1. **活动信息**：`eventName` 活动名称、`slogan` 标语胶囊（可留空）、`logoUrl` 换 Logo（留空用内置 mu 深圳 Logo）
-2. **上传页二维码**：`uploadUrl` 填上传页的线上地址，大屏右下角会自动生成二维码
+2. **上传页二维码**：`uploadUrl` 已是 `https://mufriends.mushenzhen.xyz/upload/`
 3. **Supabase**（不填则为 demo 模式，方便先看效果）：
    - 项目建好后，在 Dashboard → **Project Settings → API** 复制 **Project URL** 和 **anon public key**
    - 填进 `supabase` 两个字段
@@ -48,18 +50,15 @@ server.js           本地预览用（部署时不需要）
 ## Supabase 建库（一次性）
 
 Dashboard → **SQL Editor** → 新建查询 → 把 `supabase-setup.sql` 整段粘贴进去执行。
-它会建好：照片表 `photos`、公开存储桶 `photos`、以及匿名读写权限策略。
+它会建好：照片表 `photos`、公开存储桶 `photos`、以及最初的匿名策略。
 
-## 上传页怎么接
+muShenzhen 2026 上场前再执行仓库根目录的 `sql/mushenzhen-2026-rls.sql`，收紧成「只能插入，M 只能隐藏」。
 
-把 `upload-snippet.js` 复制到你的上传页项目，按文件头注释两步接入：
+## 上传页
 
-1. 页面引入 Supabase SDK + 这个文件
-2. 填同样的 URL 和 anon key，用户确认上传时调用 `uploadToWall({ nickname, message, file })`
+观众页面是 `upload/`。本地：`node server.js`，然后打开 `http://127.0.0.1:7100/upload/?e=mushenzhen-2026`。
 
-照片会先压缩（长边 1600px、JPEG 80%，约 300KB）再上传，弱网也稳。大屏每 5 秒轮询一次新照片。
-
-数据约定（两边共用，不要改字段名）：表 `photos`，字段 `nickname` / `message` / `photo_url` / `deleted`（删除标记）。
+`upload-snippet.js` 不是这场的上传页，不要用它传二维码。
 
 ## 部署到 GitHub Pages
 
