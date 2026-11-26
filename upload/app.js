@@ -19,6 +19,7 @@
       selected = file;
       $("preview").src = url;
       $("preview").className = "show";
+      $("caption-wrap").hidden = false;
       $("pick-label").textContent = "更换照片 / Change photo";
       say("");
     };

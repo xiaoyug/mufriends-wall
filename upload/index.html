@@ -41,6 +41,17 @@
   }
   #preview { display: none; width: 100%; height: auto; margin-top: 14px; background: #111; }
   #preview.show { display: block; }
+  label.field { display: block; margin-top: 12px; font-size: 15px; font-weight: 700; }
+  label.field span { display: block; font-size: 12px; font-weight: 400; color: #aaa; }
+  textarea, input[type="text"], input[type="date"] {
+    display: block; width: 100%;
+    margin-top: 6px;
+    padding: 11px 12px;
+    font: inherit; font-size: 16px;
+    color: #111; background: #fff;
+    border: 2px solid #111; border-radius: 0;
+  }
+  #caption-wrap[hidden] { display: none; }
   #status { min-height: 1.4em; margin: 12px 0 0; font-size: 14px; color: #ddd; }
   footer {
     margin-top: 28px;
@@ -60,6 +71,9 @@
 <p class="lead">上传一张现场照片，它会出现在大屏幕上。<br>Upload one event photo. It appears on the big screen.</p>
 <main>
   <img id="preview" alt="照片预览 / Photo preview">
+  <label class="field" id="caption-wrap" for="caption" hidden>一句话（可选）<span>Caption (optional)</span>
+    <textarea id="caption" maxlength="140" placeholder="想写在照片旁边的话 / A short note next to the photo"></textarea>
+  </label>
   <label class="big" id="pick-label" for="photo">添加照片 / Add a photo</label>
   <input class="file" id="photo" type="file" accept="image/*">
   <p id="status" role="status" aria-live="polite"></p>
