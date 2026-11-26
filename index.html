@@ -171,8 +171,18 @@
     animation: spin 14s linear infinite;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
-  #empty .big { font-size: 34px; font-weight: 600; }
-  #empty .small { font-size: 17px; letter-spacing: 1px; color: var(--mist); }
+  #empty .big {
+    font-family: "IBM Plex Sans SC", "PingFang SC", sans-serif;
+    font-size: 34px;
+    font-weight: 600;
+  }
+  #empty .small {
+    font-family: "IBM Plex Sans SC", "PingFang SC", sans-serif;
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: 0;
+    color: var(--ink);
+  }
 
   /* ---- 装饰：漂浮的星号 ---- */
   .spark {
@@ -282,8 +292,8 @@
 <div id="empty">
   <div class="ring">📷</div>
   <div class="big">等待第一张照片</div>
-  <div class="big" style="font-size:22px; font-weight:700;">Waiting for the first photo</div>
-  <div class="small mono">扫码上传 · scan the QR code —— 照片会实时滚进来 · photos roll in live</div>
+  <div class="big">Waiting for the first photo</div>
+  <div class="small">扫码上传 · scan the QR code —— 照片会实时滚进来 · photos roll in live</div>
 </div>
 
 <div id="popup">
