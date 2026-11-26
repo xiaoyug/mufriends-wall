@@ -196,6 +196,50 @@
   }
   function handleSaveClick() { shareSelectedPhoto(true); }
   function handleShareClick() { shareSelectedPhoto(false); }
+  function buildRedNoteText() {
+    var tags = "#madeinshenzhen #mushenzhen";
+    var caption = $("caption").value.trim();
+    if (!caption) return tags;
+    return tags + "\n" + caption;
+  }
+  function copyText(text) {
+    if (!(navigator.clipboard && navigator.clipboard.writeText)) return Promise.reject(new Error("clipboard"));
+    return navigator.clipboard.writeText(text);
+  }
+  function openRedNoteApp() {
+    var popup = window.open("xhsdiscover://", "_blank");
+    if (!popup) {
+      window.open("https://www.xiaohongshu.com", "_blank");
+      return;
+    }
+    setTimeout(function () {
+      if (document.visibilityState === "visible") window.open("https://www.xiaohongshu.com", "_blank");
+    }, 900);
+  }
+  function shareRedNoteFile(shareText, hint) {
+    var canShareFiles = !!(navigator.share && navigator.canShare && navigator.canShare({ files: [selected] }));
+    if (!canShareFiles) {
+      openRedNoteApp();
+      return;
+    }
+    return navigator.share({ files: [selected], text: shareText }).catch(function (error) {
+      if (error && error.name === "AbortError") return;
+      say(hint);
+      openRedNoteApp();
+    });
+  }
+  function handleRedNoteClick() {
+    if (!selected) return;
+    var shareText = buildRedNoteText();
+    var hint = "标签已复制，在小红书里粘贴 / Tags copied — paste them in RedNote";
+    copyText(shareText).then(function () {
+      say(hint);
+      return shareRedNoteFile(shareText, hint);
+    }).catch(function () {
+      say("未能写入剪贴板，请手动复制： " + shareText + " / Could not copy. Copy this text yourself.");
+      return shareRedNoteFile(shareText, hint);
+    });
+  }
 
   $("photo").addEventListener("change", function (event) {
     var file = event.target.files && event.target.files[0];
@@ -205,6 +249,7 @@
   });
   $("save").addEventListener("click", handleSaveClick);
   $("share").addEventListener("click", handleShareClick);
+  $("rednote").addEventListener("click", handleRedNoteClick);
   $("consent").addEventListener("change", refreshGate);
   $("send").addEventListener("click", function () {
     if (!canSubmit()) { refreshGate(); return; }
