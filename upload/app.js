@@ -95,8 +95,7 @@
     return !busy && !!(selected && $("consent").checked);
   }
   function allowsUpload() {
-    var host = location.hostname;
-    return host === "mufriends.mushenzhen.xyz" || host === "localhost" || host === "127.0.0.1";
+    return location.hostname === "mufriends.mushenzhen.xyz";
   }
   function authHeaders() {
     return { apikey: CFG.anonKey, Authorization: "Bearer " + CFG.anonKey };
@@ -224,7 +223,10 @@
       refreshGate();
     });
   });
-  if (!allowsUpload()) $("preview-banner").hidden = false;
+  var host = location.hostname;
+  if (host !== "mufriends.mushenzhen.xyz" && host !== "localhost" && host !== "127.0.0.1") {
+    $("preview-banner").hidden = false;
+  }
   refreshGate();
 
   if ("serviceWorker" in navigator) {
