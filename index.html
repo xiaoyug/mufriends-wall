@@ -103,41 +103,46 @@
   }
   body.managing .cell .del { display: block; }
 
-  /* ---- 新照片弹窗：大拍立得 + 黄色胶带 ---- */
+  /* Solid card. The dim layer is only the backdrop, not the type. */
   #popup {
     position: fixed; inset: 0; z-index: 50;
     display: flex; align-items: center; justify-content: center;
-    background: rgba(255,255,255,.78);
+    background: rgba(33,33,33,.55);
     opacity: 0; pointer-events: none;
     transition: opacity .3s ease;
   }
   #popup.show { opacity: 1; }
   #popup-card {
     position: relative;
-    background: var(--paper); border: 1px solid var(--ink);
-    padding: 16px 16px 20px;
-    max-width: 58vw; text-align: center;
-    box-shadow: none; border-radius: 0;
+    background-color: #FFFFFF;
+    border: 4px solid #000000;
+    border-radius: 0;
+    padding: 28px 28px 32px;
+    max-width: min(920px, 70vw);
+    text-align: center;
+    box-shadow: none;
     transform: scale(.8);
     transition: transform .35s cubic-bezier(.2,1.5,.4,1);
   }
   #popup.show #popup-card { transform: scale(1); }
   #popup-card img {
-    max-width: 100%; max-height: 60vh;
+    max-width: 100%; max-height: 52vh;
     display: block; margin: 0 auto;
-    border: 1px solid var(--ink);
+    background: #FFFFFF;
+    border: 1px solid #212121;
   }
   #popup-nick {
-    display: inline-block; margin-top: 16px;
-    background: var(--black); color: var(--accent);
-    font-size: 22px; letter-spacing: 1px;
-    padding: 6px 16px; border-radius: 0;
+    display: inline-block; margin-top: 20px;
+    background: #000000; color: #DFFF2F;
+    font-size: 28px; font-weight: 700; letter-spacing: 0;
+    padding: 10px 18px; border-radius: 0;
   }
   #popup-nick:empty { display: none; }
   #popup-msg {
-    font-size: 22px; font-weight: 700; color: var(--ink);
-    margin-top: 10px; line-height: 1.5;
-    max-width: 52vw; word-break: break-word; white-space: pre-wrap;
+    font-size: 32px; font-weight: 700; color: #212121;
+    background: #FFFFFF;
+    margin-top: 16px; line-height: 1.4;
+    max-width: 100%; word-break: break-word; white-space: pre-wrap;
   }
   #popup-msg:empty { display: none; }
 
@@ -184,13 +189,14 @@
   body.managing #mgr-bar { display: block; }
 
   /* ---- 状态灯 ---- */
+  /* Hidden unless the connection fails, so the corner is not a stray square. */
   #status {
-    position: fixed; right: 24px; top: 16px; z-index: 20;
-    width: 12px; height: 12px; border-radius: 0;
-    background: var(--mist); border: 2px solid var(--paper); opacity: .8;
+    position: fixed; right: 36px; bottom: 200px; z-index: 40;
+    width: 14px; height: 14px; border-radius: 0;
+    display: none;
+    background: var(--support); border: 2px solid var(--black);
   }
-  #status.ok { background: var(--accent); }
-  #status.err { background: var(--support); }
+  #status.err { display: block; }
 
   /* ---- 活动索引页 ---- */
   #index {
