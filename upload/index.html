@@ -66,6 +66,20 @@
   }
   textarea { min-height: 88px; resize: vertical; }
   #caption-wrap[hidden] { display: none; }
+  .event-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 148px;
+    gap: 12px;
+    margin-top: 18px;
+    padding: 14px;
+    border: 1.5px dashed #999;
+    border-radius: 6px;
+    background: #111;
+  }
+  .event-row .field { margin-top: 0; }
+  @media (max-width: 360px) {
+    .event-row { grid-template-columns: 1fr; }
+  }
   #status { min-height: 1.4em; margin: 12px 0 0; font-size: 14px; color: #DFFF2F; }
   .hint { margin: 8px 0 0; font-size: 12px; line-height: 1.45; color: #9a9a9a; }
   .card { margin-top: 18px; padding: 14px; border: 1px solid #2a2a2a; background: #0a0a0a; }
@@ -110,12 +124,14 @@
   </label>
   <label class="big" id="pick-label" for="photo">添加照片 / Add a photo</label>
   <input class="file" id="photo" type="file" accept="image/*">
-  <label class="field" for="event">活动 <span>Event</span>
-    <select id="event"></select>
-  </label>
-  <label class="field" for="date">日期 <span>Date</span>
-    <input id="date" type="date">
-  </label>
+  <section class="event-row" aria-label="活动 / Event">
+    <label class="field" for="event">活动 <span>Event</span>
+      <select id="event"></select>
+    </label>
+    <label class="field" for="date">日期 <span>Date</span>
+      <input id="date" type="date">
+    </label>
+  </section>
   <p class="hint" id="slug-line"></p>
   <section class="card" aria-label="联系方式 / Contact">
     <label class="toggle" for="contact-on">
