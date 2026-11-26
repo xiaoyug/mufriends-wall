@@ -1,13 +1,13 @@
 // 只缓存上传页外壳。上传请求走 /proxy，不能进缓存。
 // 改了被缓存的文件就把 CACHE 版本号抬高，并同步 index.html 页脚的 upload vN。
-const CACHE = "upload-v1-mushenzhen-2026";
+const CACHE = "upload-v2-official-logo";
 
 const ASSETS = [
   "./",
   "./index.html",
   "./config.js",
   "./app.js",
-  "./header.jpg"
+  "./mushenzhen-full-green.svg"
 ];
 
 self.addEventListener("install", (event) => {

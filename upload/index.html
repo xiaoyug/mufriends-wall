@@ -10,7 +10,7 @@
 <style>
   * { box-sizing: border-box; }
   #preview-banner[hidden] { display: none; }
-  #preview-banner { margin: 0; padding: 10px 18px; background: #e0f050; color: #111; font-size: 13px; font-weight: 700; }
+  #preview-banner { margin: 0; padding: 10px 18px; background: #DFFF2F; color: #111; font-size: 13px; font-weight: 700; }
   html, body { margin: 0; background: #000; color: #f4f4f4; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -19,16 +19,23 @@
     margin: 0 auto;
     padding-bottom: calc(36px + env(safe-area-inset-bottom));
   }
-  .poster { background: #000; padding: 12px 8px 0; text-align: center; }
-  .poster img { width: 100%; height: auto; display: block; }
-  .hash {
-    margin: 2px 0 0;
-    color: #e0f050;
-    font-family: ui-monospace, "SF Mono", Menlo, "Courier New", monospace;
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.14em;
+  .poster { background: #000; padding: 28px 28px 10px; text-align: center; }
+  .logo {
+    display: block;
+    width: min(260px, 100%);
+    min-width: 200px;
+    height: auto;
+    margin: 0 auto;
   }
+  .hash, .yearline {
+    margin: 26px 0 0;
+    color: #DFFF2F;
+    font-family: ui-monospace, "SF Mono", Menlo, "Courier New", monospace;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+  }
+  .yearline { margin-top: 4px; font-weight: 500; letter-spacing: 0.08em; }
   .lead { margin: 0; padding: 18px 18px 0; font-size: 15px; color: #ececec; }
   main { padding: 8px 18px 0; }
   .file { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
@@ -36,16 +43,16 @@
     display: block; width: 100%;
     margin-top: 16px;
     padding: 20px 12px;
-    background: #e0f050; color: #111;
+    background: #DFFF2F; color: #111;
     border: 0;
     font: inherit; font-size: 20px; font-weight: 800; text-align: center;
     letter-spacing: 0.02em;
     cursor: pointer;
   }
   .big:focus-visible, button.send:focus-visible, input:focus-visible, textarea:focus-visible {
-    outline: 3px solid #e0f050; outline-offset: 2px;
+    outline: 3px solid #DFFF2F; outline-offset: 2px;
   }
-  #preview { display: none; width: 100%; height: auto; margin-top: 16px; background: #111; border: 3px solid #e0f050; }
+  #preview { display: none; width: 100%; height: auto; margin-top: 16px; background: #111; border: 3px solid #DFFF2F; }
   #preview.show { display: block; }
   label.field { display: block; margin-top: 14px; font-size: 15px; font-weight: 700; }
   label.field span { display: block; margin-top: 2px; font-size: 12px; font-weight: 400; color: #9a9a9a; }
@@ -59,11 +66,11 @@
   }
   textarea { min-height: 88px; resize: vertical; }
   #caption-wrap[hidden] { display: none; }
-  #status { min-height: 1.4em; margin: 12px 0 0; font-size: 14px; color: #e0f050; }
+  #status { min-height: 1.4em; margin: 12px 0 0; font-size: 14px; color: #DFFF2F; }
   .hint { margin: 8px 0 0; font-size: 12px; line-height: 1.45; color: #9a9a9a; }
   .card { margin-top: 18px; padding: 14px; border: 1px solid #2a2a2a; background: #0a0a0a; }
   .toggle { display: flex; gap: 12px; align-items: flex-start; font-weight: 700; }
-  .toggle input, .consent input { width: 22px; height: 22px; margin-top: 2px; flex: none; accent-color: #e0f050; }
+  .toggle input, .consent input { width: 22px; height: 22px; margin-top: 2px; flex: none; accent-color: #DFFF2F; }
   .toggle-copy { font-size: 15px; }
   .toggle-copy span { display: block; margin-top: 2px; font-size: 12px; font-weight: 400; color: #9a9a9a; }
   #contact-wrap[hidden] { display: none; }
@@ -72,7 +79,7 @@
     display: block; width: 100%;
     margin-top: 16px;
     padding: 16px 12px;
-    background: #e0f050; color: #111;
+    background: #DFFF2F; color: #111;
     border: 0;
     font: inherit; font-size: 17px; font-weight: 800;
     cursor: pointer;
@@ -91,8 +98,9 @@
 <body>
 <p id="preview-banner" hidden>预览模式：不会把照片写入正式活动。 / Preview only — photos are not sent to the live event.</p>
 <header class="poster">
-  <img src="header.jpg" alt="mushenzhen 2026 · MADE — IN — SHENZHEN">
+  <img class="logo" src="mushenzhen-full-green.svg" alt="mushenzhen" width="400" height="150">
   <p class="hash">#madeinshenzhen</p>
+  <p class="yearline">2026 / MADE — IN — SHENZHEN</p>
 </header>
 <p class="lead">上传一张现场照片，它会出现在大屏幕上。<br>Upload one event photo. It appears on the big screen.</p>
 <main>
@@ -129,7 +137,8 @@
 </main>
 <footer>
   <span id="offline">muShenzhen 2026</span><br>
-  muShenzhen 2026 · upload v1
+  muShenzhen 2026 · upload v2<br>
+  视觉素材来源：mushenzhen
 </footer>
 <script src="config.js"></script>
 <script src="app.js"></script>
