@@ -40,18 +40,15 @@
     logo.onerror = function () { logo.style.display = "none"; };
   }
 
-  // ---------- 装饰：漂浮的彩色星号（呼应海报的 ASCII 符号）----------
-  ["✳", "✱", "✳", "✱"].forEach(function (ch, i) {
-    var s = document.createElement("div");
-    s.className = "spark";
-    s.textContent = ch;
-    s.style.color = PALETTE[i * 2 % PALETTE.length];
-    s.style.fontSize = (28 + i * 10) + "px";
-    s.style.left = [46, 88, 8, 70][i] + "vw";
-    s.style.top = [12, 78, 55, 30][i] + "vh";
-    s.style.transform = "rotate(" + (i * 37) + "deg)";
-    document.body.appendChild(s);
-  });
+  // One small accent mark. Not a second logo, and not a grey star.
+  var spark = document.createElement("div");
+  spark.className = "spark";
+  spark.textContent = "✳";
+  spark.style.color = "#DFFF2F";
+  spark.style.fontSize = "16px";
+  spark.style.left = "58%";
+  spark.style.top = "14%";
+  document.body.appendChild(spark);
 
   // ---------- 右下角上传二维码（带活动参数，来宾扫码直达对应活动的上传页）----------
   if (CFG.uploadUrl && window.QRCode) {
