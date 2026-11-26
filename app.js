@@ -67,9 +67,8 @@
   var wall = $("wall");
   var rowCount = Math.max(2, Math.min(4, CFG.rows || 3));
   var gap = CFG.gap == null ? 26 : CFG.gap;
-  var photoH = CFG.photoHeight > 0
-    ? CFG.photoHeight
-    : Math.floor((window.innerHeight - 44) / rowCount) - gap;
+  var openH = Math.floor((window.innerHeight - 44) / rowCount) - gap;
+  var photoH = CFG.photoHeight > 0 ? CFG.photoHeight : Math.min(openH, 340);
   var photoW = Math.round(photoH * 4 / 3);
   var cellTiltSeed = 0;
   var innerH = photoH - 18; // 卡片内边距 8 + 10
@@ -183,7 +182,7 @@
 
   var rows = [];
   for (var i = 0; i < rowCount; i++) rows.push(new Row(i % 2 === 0 ? -1 : 1));
-  rows.forEach(function (r) { if (r.dir === 1) r.offset = -photoW - gap; });
+  rows.forEach(function (r) { if (r.dir === 1) r.offset = -Math.round(photoH * 0.35); });
 
   var lastT = performance.now();
   (function loop(now) {
