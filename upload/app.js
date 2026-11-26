@@ -144,7 +144,7 @@
     $("contact-on").checked = false;
     $("contact").value = "";
     $("contact-wrap").hidden = true;
-    $("consent").checked = false;
+    $("consent").checked = true;
     $("pick-label").textContent = "添加照片 / Add a photo";
   }
   function refreshGate() {
