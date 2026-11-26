@@ -69,7 +69,7 @@
   var gap = CFG.gap == null ? 26 : CFG.gap;
   var photoH = CFG.photoHeight > 0
     ? CFG.photoHeight
-    : Math.floor((window.innerHeight - 220) / rowCount) - gap;
+    : Math.floor((window.innerHeight - 44) / rowCount) - gap;
   var photoW = Math.round(photoH * 4 / 3);
   var cellTiltSeed = 0;
   var innerH = photoH - 18; // 卡片内边距 8 + 10

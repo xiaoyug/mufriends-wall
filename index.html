@@ -40,7 +40,7 @@
 
   /* ---- 顶栏 ---- */
   #header {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+    position: fixed; top: 0; left: 0; right: 0; z-index: 30;
     display: flex; align-items: flex-start; justify-content: space-between;
     padding: var(--space) 36px 0;
     pointer-events: none;
@@ -69,9 +69,15 @@
 
   /* ---- 滚动区 ---- */
   #wall {
-    position: fixed; inset: 0;
+    position: fixed;
+    top: 16px;
+    left: 400px;
+    right: 220px;
+    bottom: 28px;
+    z-index: 1;
     display: flex; flex-direction: column; justify-content: space-evenly;
-    padding-top: 150px; padding-bottom: 12px;
+    padding: 8px 0;
+    overflow: hidden;
   }
   .row { overflow: visible; white-space: nowrap; will-change: transform; }
 
