@@ -140,6 +140,7 @@
     this.el.style.paddingLeft = "12px";           // 给左倾卡片留位
     this.dir = dir;
     this.offset = 0;
+    this.origins = [];
     wall.appendChild(this.el);
   }
   Row.prototype.addCell = function (item) {
@@ -150,6 +151,7 @@
     cell.style.marginRight = gap + "px";
     cell.style.setProperty("--tilt", (((cellTiltSeed++ * 37) % 5) - 2) * 0.9 + "deg");
     cell.dataset.pid = item.id;
+    cell.dataset.origin = "1";
 
     // 宽度跟随图片真实比例：竖版「遇」卡片完整展示，不被裁切
     var caption = clipCaption(item.message);
@@ -162,6 +164,11 @@
     fitImg(img);
     img.addEventListener("load", function () {
       fitImg(img);
+      var copies = self.el.querySelectorAll('[data-clone="1"][data-pid="' + item.id + '"] img');
+      for (var i = 0; i < copies.length; i++) {
+        copies[i].style.width = img.style.width;
+        copies[i].style.height = img.style.height;
+      }
       self.ensureFilled();
     });
     // 加载失败重试 3 次，仍失败则从墙上移除，避免留破图框
@@ -193,6 +200,7 @@
     cell.appendChild(del);
 
     this.el.appendChild(cell);
+    this.origins.push(cell);
     this.ensureFilled();
     return cell;
   };
@@ -204,19 +212,22 @@
     return w;
   };
 
-  // 每张照片只出现一次；行内容不足屏宽时，末尾加隐形占位条撑开间距，
-  // 让每张照片都能从一侧完整横穿到另一侧，照片多空隙自动消失
+  // 把这一行的照片重复到至少两倍视口宽，循环时没有空白段。
   Row.prototype.ensureFilled = function () {
-    var old = this.el.querySelector(".spacer");
-    if (old) this.el.removeChild(old);
-    if (!this.el.firstElementChild) return;
-    var need = window.innerWidth + photoH * 2 + gap * 2; // 屏宽 + 两个格子余量
-    var w = this.rowWidth();
-    if (w < need) {
-      var sp = document.createElement("div");
-      sp.className = "spacer";
-      sp.style.cssText = "display:inline-block;width:" + Math.round(need - w) + "px;height:1px;visibility:hidden;";
-      this.el.appendChild(sp);
+    var spacers = this.el.querySelectorAll(".spacer");
+    for (var s = 0; s < spacers.length; s++) spacers[s].parentNode.removeChild(spacers[s]);
+    if (!this.origins.length) return;
+    var need = Math.max(wall.clientWidth, window.innerWidth) * 2;
+    var guard = 0;
+    var n = this.origins.length;
+    while (this.rowWidth() < need && guard < n * 40) {
+      var src = this.origins[guard % n];
+      var copy = src.cloneNode(true);
+      copy.dataset.clone = "1";
+      copy.removeAttribute("data-origin");
+      this.el.appendChild(copy);
+      guard++;
+      if (!src.offsetWidth) break;
     }
   };
 
@@ -245,6 +256,11 @@
   rows.forEach(function (r) { if (r.dir === 1) r.offset = -photoW - gap; });
 
   var lastT = performance.now();
+  document.addEventListener("visibilitychange", function () { lastT = performance.now(); });
+  window.addEventListener("resize", function () {
+    lastT = performance.now();
+    rows.forEach(function (r) { r.ensureFilled(); });
+  });
   (function loop(now) {
     var dt = Math.min(0.05, (now - lastT) / 1000);
     lastT = now;
@@ -273,9 +289,12 @@
       var rowEl = cell.parentNode;
       var rowIdx = rows.findIndex(function (r) { return r.el === rowEl; });
       cell.parentNode.removeChild(cell);
-      if (rowIdx >= 0) counts[rowIdx]--;
+      if (rowIdx >= 0 && cell.dataset.origin === "1") {
+        counts[rowIdx]--;
+        rows[rowIdx].origins = rows[rowIdx].origins.filter(function (origin) { return origin.dataset.pid !== pid; });
+      }
     }
-    rows.forEach(function (r) { r.ensureFilled(); });   // 删除后补齐空缺
+    rows.forEach(function (r) { r.ensureFilled(); });
     if (sb) {
       sb.from("photos").update({ deleted: true }).eq("id", pid)
         .then(function (res) { if (res.error) console.warn("云端删除失败", res.error); });
