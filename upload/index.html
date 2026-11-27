@@ -99,13 +99,13 @@
     padding: 12px;
     font: inherit; font-size: 16px;
     color: #111; background: #fff;
-    border: 0; border-radius: 0;
+    border: 1px solid #BDBDBD; border-radius: 0;
   }
   textarea { min-height: 88px; resize: vertical; }
   #caption-wrap[hidden] { display: none; }
   .event-row {
     display: grid;
-    grid-template-columns: minmax(12.5rem, 1fr) 8.5rem;
+    grid-template-columns: minmax(0, 1fr) 12.5rem;
     gap: 12px;
     margin-top: 18px;
     padding: 14px;
@@ -113,7 +113,14 @@
     border-radius: 0;
     background: var(--paper);
   }
-  .event-row .field { margin-top: 0; }
+  .event-row .field { margin-top: 0; min-width: 0; }
+  #event {
+    min-width: 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  #date { min-width: 11.5rem; }
   @media (max-width: 520px) {
     .event-row { grid-template-columns: 1fr; }
   }
@@ -128,9 +135,18 @@
     background: var(--paper);
   }
   .consent input { width: 22px; height: 22px; margin-top: 2px; flex: none; accent-color: var(--accent); }
-  .disclose { display: block; }
-  .disclose::before { content: "▼ "; }
-  .disclose[aria-expanded="true"]::before { content: "▲ "; }
+  .disclose {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+    text-align: left;
+  }
+  .disclose::before { content: "▼"; }
+  .disclose[aria-expanded="true"]::before { content: "▲"; }
   #contact-panel[hidden], #photo-actions[hidden], #save-hint[hidden] { display: none; }
   .photo-actions { display: grid; grid-template-columns: 1fr 1fr; gap: var(--card-gap); margin-top: var(--card-gap); }
   #rednote { grid-column: 1 / -1; }
@@ -152,6 +168,7 @@
   .btn:hover { filter: brightness(1.2); }
   @media (max-width: 520px) {
     .big, button.send, .btn, .disclose { padding: 12px 24px; }
+    .disclose { padding-left: 0; padding-right: 0; }
   }
   #contact-panel { margin-top: var(--card-gap); }
   .consent { display: flex; gap: 12px; align-items: flex-start; margin-top: 18px; font-size: 14px; }
@@ -196,7 +213,7 @@
       <select id="event"></select>
     </label>
     <label class="field" for="date">日期 <span>Date</span>
-      <input id="date" type="date">
+      <input id="date" type="date" lang="en-US">
     </label>
   </section>
   <p class="hint" id="slug-line"></p>
@@ -204,8 +221,9 @@
     <button type="button" class="disclose" id="contact-toggle" aria-expanded="false" aria-controls="contact-panel">联系方式 / Contact</button>
     <div id="contact-panel" hidden>
       <p class="hint">只保存你写下的文字，不能上传二维码或联系方式图片。打开后，这段文字会和照片一起出现在大屏。<br>Text you type only — no QR code and no contact image. If this is open, that text is shown on the wall with your photo.</p>
-      <label class="field" for="contact">微信 / 邮箱 / Instagram <span>WeChat ID, email, or Instagram</span>
-        <input id="contact" type="text" maxlength="80" autocomplete="off" placeholder="WeChat · email · Instagram">
+      <label class="field" for="contact">社媒账号或邮箱 <span>Social handle or email</span>
+        <span class="hint">填写邮箱或社媒账号，并注明平台，如 @joedoe (Instagram)</span>
+        <input id="contact" type="text" maxlength="80" autocomplete="off" placeholder="Type your email or social handle, and note the platform, e.g. @joedoe (Instagram)">
       </label>
     </div>
   </section>
@@ -219,7 +237,7 @@
 </main>
 <footer>
   <span id="offline">muShenzhen 2026</span><br>
-  muShenzhen 2026 · upload v4<br>
+  muShenzhen 2026 · upload v5<br>
   视觉素材来源：mushenzhen
 </footer>
 <script src="config.js"></script>
