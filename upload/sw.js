@@ -1,6 +1,6 @@
 // 只缓存上传页外壳。上传请求走 /proxy，不能进缓存。
 // 改了被缓存的文件就把 CACHE 版本号抬高，并同步 index.html 页脚的 upload vN。
-const CACHE = "upload-v8-fields";
+const CACHE = "upload-v9-contact";
 
 const ASSETS = [
   "./",
