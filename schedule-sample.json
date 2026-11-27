@@ -1,0 +1,416 @@
+{
+  "source": "sola-snapshot",
+  "fetched": "2026-11-27",
+  "group_id": "3mywjlvveoge2",
+  "note": "Public titles and times from GET https://api.sola.day/api/v1/events?group_id=3mywjlvveoge2&limit=100. Pages and local preview filter this list. The worker fetches the live API.",
+  "events": [
+    {
+      "id": "3n37ijqhrbsmc",
+      "title": "test waitlist",
+      "start": "2026-11-26T10:30:00Z",
+      "end": "2026-11-26T11:00:00Z",
+      "timezone": "Asia/Hong_Kong",
+      "status": "published"
+    },
+    {
+      "id": "3n32ef4wgkyfj",
+      "title": "开幕仪式 / Opening Ceremony",
+      "start": "2026-11-29T06:00:00Z",
+      "end": "2026-11-29T08:30:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n2ya75zqfk3g",
+      "title": "Tech on, life on",
+      "start": "2026-11-30T06:00:00Z",
+      "end": "2026-11-30T09:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n37bugfzrvrk",
+      "title": "The Art of the Pasture · Hong Lok Club Farm Day Trip / 牧野之艺 · 康乐会农场一日游",
+      "start": "2026-12-01T00:00:00Z",
+      "end": "2026-12-01T13:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n34irayfw7k6",
+      "title": "【额外付费 / Extra Fee】瓦楞纸板快速原型 | Cardboard Prototyping",
+      "start": "2026-12-01T02:00:00Z",
+      "end": "2026-12-01T04:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "closed"
+    },
+    {
+      "id": "3n3bnigutylyt",
+      "title": "PaXini · From Touch to Data: Workshop & Pitches / 帕西尼 · 从触觉到数据：工作坊与路演",
+      "start": "2026-12-01T06:00:00Z",
+      "end": "2026-12-01T09:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n3bnkmovtryt",
+      "title": "Formlabs · AI + 3D Printing Workshop / AI + 3D 打印工作坊",
+      "start": "2026-12-01T08:00:00Z",
+      "end": "2026-12-01T09:30:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n2ya76oc523g",
+      "title": "江门 · 华秋电子工厂参访 / Huaqiu Electronics Factory Visit · Jiangmen",
+      "start": "2026-12-02T00:00:00Z",
+      "end": "2026-12-02T10:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n2ya76ehsu3g",
+      "title": "越疆机器人工作坊 / DOBOT Robotics Workshop",
+      "start": "2026-12-02T06:00:00Z",
+      "end": "2026-12-02T08:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n2ya76jdki3g",
+      "title": "具身原生技术理念 · 蚂蚁灵波 / Embodied-Native Technology Talk · Ant Lingbo",
+      "start": "2026-12-02T06:00:00Z",
+      "end": "2026-12-02T08:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n34irbl6hxk6",
+      "title": "【额外付费 / Extra Fee】激光切割与插接结构 | Laser Cutting & Slot Joints",
+      "start": "2026-12-03T02:00:00Z",
+      "end": "2026-12-03T04:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "closed"
+    },
+    {
+      "id": "3n2ya76yc543g",
+      "title": "端侧算力 · 华秋电子 / Edge Computing · Huaqiu Electronics",
+      "start": "2026-12-03T05:30:00Z",
+      "end": "2026-12-03T09:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n37cdvr2ckrk",
+      "title": "DOBOT Robotics Showroom Visit · Shenzhen / 深圳·越疆机器人展厅参访",
+      "start": "2026-12-03T06:00:00Z",
+      "end": "2026-12-03T08:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n2ya76tarq3g",
+      "title": "AI Assurance · Workshop & Panel",
+      "start": "2026-12-03T10:00:00Z",
+      "end": "2026-12-03T13:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n2ya7a6m5u3g",
+      "title": "Seeed · 主题分享 / Seeed · Talk",
+      "start": "2026-12-04T02:00:00Z",
+      "end": "2026-12-04T03:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n3bhnmkvi7yt",
+      "title": "Seeed · 帽子工坊 / Seeed · Hat Workshop",
+      "start": "2026-12-04T03:00:00Z",
+      "end": "2026-12-04T04:00:00Z",
+      "timezone": "Asia/Hong_Kong",
+      "status": "published"
+    },
+    {
+      "id": "3n2ya77zjde3g",
+      "title": "Seeed Studio 生产线参访 / Seeed Studio Production Line Visit",
+      "start": "2026-12-04T05:00:00Z",
+      "end": "2026-12-04T09:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n32ef546rjfj",
+      "title": "Ralphthon 线下活动 / Ralphthon Physical @muShenzhen",
+      "start": "2026-12-05T04:00:00Z",
+      "end": "2026-12-05T10:30:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n2yajaopju3g",
+      "title": "Startup Grind 深圳 · 开放麦 / Startup Grind Shenzhen · 2026 Startup Open Mic Party",
+      "start": "2026-12-05T06:30:00Z",
+      "end": "2026-12-05T08:30:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n34n2wxnyck6",
+      "title": "Garage Founder Story 1",
+      "start": "2026-12-05T08:00:00Z",
+      "end": "2026-12-05T10:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "closed"
+    },
+    {
+      "id": "3n2yajau4fc3g",
+      "title": "AI 创业交流：AI 运动硬件专场 / AI Startup Coffee Chat: Sports Hardware",
+      "start": "2026-12-05T11:00:00Z",
+      "end": "2026-12-05T13:30:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n2yajazg3m3g",
+      "title": "ClawCon 大会 / ClawCon Conference",
+      "start": "2026-12-06T04:30:00Z",
+      "end": "2026-12-06T09:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n3bnq6otvqyt",
+      "title": "未来人实验室｜个人生物基线检测 / Future Human Lab | Personal Biomarker Baseline",
+      "start": "2026-12-07T00:30:00Z",
+      "end": "2026-12-07T03:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n32ef5c5z4fj",
+      "title": "清晨养生功法 / Morning Body Practice",
+      "start": "2026-12-07T01:00:00Z",
+      "end": "2026-12-07T02:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n32ef5ht5ofj",
+      "title": "长寿与再生医学开幕日 / Longevity & Regenerative Medicine · 上午场 / Morning Session",
+      "start": "2026-12-07T02:00:00Z",
+      "end": "2026-12-07T04:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n32ef5n6rmfj",
+      "title": "长寿与再生医学开幕日 / Longevity & Regenerative Medicine · 下午场 / Afternoon Session",
+      "start": "2026-12-07T06:00:00Z",
+      "end": "2026-12-07T09:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n3bpwtm3tvyt",
+      "title": "未来人实验室｜量化自我工作坊 / Future Human Lab | Quantified Self Workshop",
+      "start": "2026-12-07T06:00:00Z",
+      "end": "2026-12-07T08:30:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n32ef5smt6fj",
+      "title": "Nuromova 脑机体验 #1：恢复训练 / BCI Experience #1: Recovery Training",
+      "start": "2026-12-08T01:00:00Z",
+      "end": "2026-12-08T02:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n34irc735qk6",
+      "title": "【额外付费 / Extra Fee】3D 打印与零件试装 | 3D Printing & Test Fitting",
+      "start": "2026-12-08T02:00:00Z",
+      "end": "2026-12-08T04:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "closed"
+    },
+    {
+      "id": "3n32ef5yzr4fj",
+      "title": "合成生物日 / Synthetic Biology Day",
+      "start": "2026-12-08T06:00:00Z",
+      "end": "2026-12-08T09:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n37dfl5xmmrk",
+      "title": "Huaqiu Electronics Factory Visit · Jiangmen / 江门·华秋电子工厂参访",
+      "start": "2026-12-09T00:00:00Z",
+      "end": "2026-12-09T10:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n32ef66vwifj",
+      "title": "药物研发创新日 / Drug Discovery Innovation Day · 上午场 / Morning Session",
+      "start": "2026-12-09T02:00:00Z",
+      "end": "2026-12-09T04:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n32ef6g2klfj",
+      "title": "药物研发创新日 / Drug Discovery Innovation Day · 下午场 / Afternoon Session",
+      "start": "2026-12-09T06:00:00Z",
+      "end": "2026-12-09T09:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n32ef6lsjufj",
+      "title": "Nuromova 脑机体验 #2：脑机生活体检 / BCI Experience #2: Brain–Computer Lifestyle Checkup",
+      "start": "2026-12-10T05:00:00Z",
+      "end": "2026-12-10T06:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n32ef7a6ntfj",
+      "title": "穿戴设备与脑机接口日 / Wearables & BCI Day",
+      "start": "2026-12-10T06:00:00Z",
+      "end": "2026-12-10T09:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n32ef7g7qpfj",
+      "title": "功夫／太极 / Kung Fu & Tai Chi · 12月10日 / Dec 10",
+      "start": "2026-12-10T08:00:00Z",
+      "end": "2026-12-10T09:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n32ef7ln3ifj",
+      "title": "教育与可持续日 / Education & Sustainability Day",
+      "start": "2026-12-11T02:00:00Z",
+      "end": "2026-12-11T10:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n32ef7rfcmfj",
+      "title": "人体之外的生命科技日 / Life Beyond the Human Body · 上午场 / Morning Session",
+      "start": "2026-12-11T02:00:00Z",
+      "end": "2026-12-11T04:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n32ef7xol7fj",
+      "title": "人体之外的生命科技日 / Life Beyond the Human Body · 下午场 / Afternoon Session",
+      "start": "2026-12-11T06:00:00Z",
+      "end": "2026-12-11T09:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n32efa5mptfj",
+      "title": "功夫／太极 / Kung Fu & Tai Chi · 12月11日 / Dec 11",
+      "start": "2026-12-11T06:00:00Z",
+      "end": "2026-12-11T07:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n32efadlncfj",
+      "title": "生物黑客开放麦 / Biohacker Open Mic",
+      "start": "2026-12-11T08:00:00Z",
+      "end": "2026-12-11T10:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n32efajirrfj",
+      "title": "功夫／太极 / Kung Fu & Tai Chi · 12月12日 / Dec 12",
+      "start": "2026-12-12T00:30:00Z",
+      "end": "2026-12-12T02:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n32efapb5rfj",
+      "title": "长寿科技加速营 / Longevity Technology Accelerator",
+      "start": "2026-12-12T01:00:00Z",
+      "end": "2026-12-12T04:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n32efauvhufj",
+      "title": "AAIF 深圳聚会 / AAIF Shenzhen Meetup",
+      "start": "2026-12-12T06:00:00Z",
+      "end": "2026-12-12T09:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n34n2xwnxpk6",
+      "title": "Garage Founder Story 2",
+      "start": "2026-12-12T08:00:00Z",
+      "end": "2026-12-12T10:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "closed"
+    },
+    {
+      "id": "3n32efb2o2efj",
+      "title": "开源机器人黑客松 / OpenRobot Hackathon",
+      "start": "2026-12-13T02:00:00Z",
+      "end": "2026-12-13T10:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n32efba4iefj",
+      "title": "Personal Agent 交互硬件分享会 / Personal Agent Interactive Hardware Talk",
+      "start": "2026-12-14T06:00:00Z",
+      "end": "2026-12-14T08:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n32efbfp3ifj",
+      "title": "开放智能体日 / Open Agent Day",
+      "start": "2026-12-15T02:00:00Z",
+      "end": "2026-12-15T10:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n32efbnge5fj",
+      "title": "AI 与游戏日 / AI & Games Day",
+      "start": "2026-12-16T02:00:00Z",
+      "end": "2026-12-16T12:30:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n32efbt5esfj",
+      "title": "FDE 工作坊 / FDE Workshop",
+      "start": "2026-12-16T06:00:00Z",
+      "end": "2026-12-16T08:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    },
+    {
+      "id": "3n32efbzimhfj",
+      "title": "SmallWod 开放麦 / SmallWod Open Mic",
+      "start": "2026-12-17T07:00:00Z",
+      "end": "2026-12-17T09:00:00Z",
+      "timezone": "Asia/Shanghai",
+      "status": "published"
+    }
+  ]
+}
