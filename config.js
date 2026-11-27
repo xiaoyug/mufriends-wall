@@ -10,7 +10,7 @@ window.WALL_CONFIG = {
   eventName: "muShenzhen 2026",
   eventSlug: "mushenzhen-2026",
   eventDate: "2026-11-29",
-  eventLine: "A city for makers",
+  eventLine: "29 Nov – 18 Dec 2026 · OCT-LOFT C2",
   slogan: "",                         // 不另写宣传语；空着时本场显示上面的日期和场地
   logoUrl: "assets/mushenzhen-full-green.svg",  // 官方 full logo，不使用 logo-data.js
 

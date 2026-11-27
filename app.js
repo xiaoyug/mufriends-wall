@@ -15,8 +15,13 @@
   if (EVENT_SLUG) $("event-editor").dataset.active = "1";   // 活动编辑表单只在活动页的管理模式出现
 
   // ---------- 顶栏：活动名 + 日期场地 + 官方 logo ----------
-  function renderEventName(name) {
-    $("event-name").textContent = name || "";
+  // Black block under the logo. Pass a name from a live schedule later;
+  // until then callers pass the config event name.
+  function renderCurrentEventName(name) {
+    var block = $("date-block");
+    var text = name || CFG.eventName || "";
+    block.textContent = text;
+    block.title = text;
   }
   function renderSlogan(text) {
     var pill = $("slogan-pill");
@@ -25,10 +30,10 @@
   }
   var knownSlug = CFG.eventSlug || "mushenzhen-2026";
   if (!EVENT_SLUG || EVENT_SLUG === knownSlug) {
-    renderEventName(CFG.eventName || "照片墙");
+    renderCurrentEventName(CFG.eventName || "照片墙");
     renderSlogan(CFG.slogan || CFG.eventLine || "");
   } else {
-    renderEventName(EVENT_SLUG);
+    renderCurrentEventName(EVENT_SLUG);
     renderSlogan("");
   }
 
@@ -325,7 +330,7 @@
     var known = ev.slug === (CFG.eventSlug || "mushenzhen-2026");
     var name = ev.name || "";
     if (known && (!name || name === ev.slug)) name = CFG.eventName || name;
-    if (name) renderEventName(name);
+    if (name) renderCurrentEventName(name);
     var line = ev.slogan || "";
     if (!line && known) line = CFG.eventLine || "";
     renderSlogan(line || ev.date || "");

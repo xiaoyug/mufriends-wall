@@ -46,29 +46,31 @@
     padding: var(--space) 36px 0;
     pointer-events: none;
   }
-  #title-block { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+  #title-block { display: flex; flex-direction: column; align-items: flex-start; gap: 9px; }
   .kv-block { background: var(--black); color: var(--accent); border-radius: 0; }
-  #brand-block { padding: 24px; }
+  #brand-block { padding: 18px; }
   #event-name { display: none; }
   #date-block {
     font-family: "Chakra Petch", "PingFang SC", sans-serif;
-    font-size: 28px; font-weight: 600; letter-spacing: 0.04em;
-    padding: 12px 16px; line-height: 1;
+    font-size: 21px; font-weight: 600; letter-spacing: 0.04em;
+    padding: 9px 12px; line-height: 1;
+    max-width: 240px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   #slogan-pill {
     display: none;
     align-self: flex-start;
     background: transparent; color: var(--ink);
-    font-size: 16px; letter-spacing: 0; font-weight: 600;
+    font-size: 12px; letter-spacing: 0; font-weight: 600;
     padding: 0; border-radius: 0;
   }
-  #logo { width: 240px; min-width: 200px; height: auto; display: block; }
+  #logo { width: 180px; min-width: 180px; height: auto; display: block; }
 
   /* ---- 滚动区 ---- */
   #wall {
     position: fixed;
     top: 16px;
-    left: 400px;
+    left: 320px;
     right: 220px;
     bottom: 28px;
     z-index: 1;
@@ -273,7 +275,7 @@
       <img id="logo" alt="mushenzhen" width="400" height="150">
       <div id="event-name"></div>
     </div>
-    <div id="date-block" class="kv-block">11.29 - 12.18</div>
+    <div id="date-block" class="kv-block"></div>
     <div id="slogan-pill" class="mono"></div>
   </div>
 </div>
