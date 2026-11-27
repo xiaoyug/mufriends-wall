@@ -15,11 +15,16 @@
   if (EVENT_SLUG) $("event-editor").dataset.active = "1";   // 活动编辑表单只在活动页的管理模式出现
 
   // ---------- 顶栏：活动名 + 日期场地 + 官方 logo ----------
-  // Black block under the logo. Pass a name from a live schedule later;
-  // until then callers pass the config event name.
+  // Black block under the logo. A live schedule can pass a name later.
+  // Empty, or a name that is only the slug, falls back to the config event.
+  function currentEventName(name) {
+    var text = name ? String(name).trim() : "";
+    if (!text) return CFG.eventName || "muShenzhen 2026";
+    return text;
+  }
   function renderCurrentEventName(name) {
     var block = $("date-block");
-    var text = name || CFG.eventName || "";
+    var text = currentEventName(name);
     block.textContent = text;
     block.title = text;
   }
@@ -33,7 +38,7 @@
     renderCurrentEventName(CFG.eventName || "照片墙");
     renderSlogan(CFG.slogan || CFG.eventLine || "");
   } else {
-    renderCurrentEventName(EVENT_SLUG);
+    renderCurrentEventName("");
     renderSlogan("");
   }
 
@@ -329,8 +334,8 @@
     currentEvent = ev;
     var known = ev.slug === (CFG.eventSlug || "mushenzhen-2026");
     var name = ev.name || "";
-    if (known && (!name || name === ev.slug)) name = CFG.eventName || name;
-    if (name) renderCurrentEventName(name);
+    if (!name || name === ev.slug) name = "";
+    renderCurrentEventName(name);
     var line = ev.slogan || "";
     if (!line && known) line = CFG.eventLine || "";
     renderSlogan(line || ev.date || "");

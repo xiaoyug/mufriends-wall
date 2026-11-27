@@ -48,7 +48,7 @@
   }
   #title-block { display: flex; flex-direction: column; align-items: flex-start; gap: 9px; }
   .kv-block { background: var(--black); color: var(--accent); border-radius: 0; }
-  #brand-block { padding: 18px; }
+  #brand-block { padding: 14px; }
   #event-name { display: none; }
   #date-block {
     font-family: "Chakra Petch", "PingFang SC", sans-serif;
@@ -64,7 +64,14 @@
     font-size: 12px; letter-spacing: 0; font-weight: 600;
     padding: 0; border-radius: 0;
   }
-  #logo { width: 180px; min-width: 180px; height: auto; display: block; }
+  #logo { width: 135px; min-width: 135px; height: auto; display: block; }
+  #makers-line {
+    margin: 0;
+    background: none;
+    color: var(--ink);
+    font-family: "Chakra Petch", "PingFang SC", sans-serif;
+    font-size: 14px; font-weight: 600; letter-spacing: 0.14em; line-height: 1.2;
+  }
 
   /* ---- 滚动区 ---- */
   #wall {
@@ -278,6 +285,7 @@
       <div id="event-name"></div>
     </div>
     <div id="date-block" class="kv-block"></div>
+    <p id="makers-line">A — CITY — FOR — MAKERS</p>
     <div id="slogan-pill" class="mono"></div>
   </div>
 </div>
