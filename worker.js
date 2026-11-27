@@ -3,7 +3,7 @@
  * 2. /events/now 只读：从 sola 取正在进行的场次。Sunny 部署后才上线。
  * 3. 其余路径走静态资产（大屏页面本身）
  */
-import { SOLA_LIST, normalizeList, parseNowParam, runningAt } from "./schedule.mjs";
+import { SOLA_LIST, normalizeList, nextPageNumber, parseNowParam, runningAt } from "./schedule.mjs";
 
 var UPSTREAM = "https://kqttuewfmvuuohvqbhel.supabase.co";
 
@@ -70,14 +70,22 @@ async function solaList() {
   var key = new Request(SOLA_LIST);
   var hit = await cache.match(key);
   if (hit) return hit.json();
-  var res = await fetch(SOLA_LIST, { headers: { accept: "application/json" } });
-  if (!res.ok) throw new Error("sola " + res.status);
-  var data = await res.json();
-  var stored = new Response(JSON.stringify(data), {
+  var merged = [];
+  var page = 1;
+  while (page) {
+    var res = await fetch(SOLA_LIST + "&page=" + page, { headers: { accept: "application/json" } });
+    if (!res.ok) throw new Error("sola " + res.status);
+    var data = await res.json();
+    var chunk = data.data || [];
+    for (var i = 0; i < chunk.length; i++) merged.push(chunk[i]);
+    page = chunk.length ? nextPageNumber(data.meta) : 0;
+  }
+  var body = { data: merged };
+  var stored = new Response(JSON.stringify(body), {
     headers: { "content-type": "application/json", "cache-control": "public, max-age=480" }
   });
   await cache.put(key, stored);
-  return data;
+  return body;
 }
 
 async function eventsNow(url) {
