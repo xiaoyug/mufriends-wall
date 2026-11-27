@@ -107,18 +107,25 @@
   var wall = $("wall");
   var rowCount = Math.max(2, Math.min(4, CFG.rows || 3));
   var gap = CFG.gap == null ? 26 : CFG.gap;
-  var openH = Math.floor((window.innerHeight - 44) / rowCount) - gap;
-  var photoH = CFG.photoHeight > 0 ? CFG.photoHeight : Math.min(openH, 340);
+  var openH = Math.floor((wall.getBoundingClientRect().height - 8) / rowCount) - gap;
+  var photoH = CFG.photoHeight > 0 ? CFG.photoHeight : Math.max(140, openH);
   var photoW = Math.round(photoH * 4 / 3);
   var cellTiltSeed = 0;
   var innerH = photoH - 18; // 卡片内边距 8 + 10
 
   // 按图片真实比例修正显示宽度（竖版「遇」卡片完整展示，不被裁切）
+  function clipCaption(text) {
+    var chars = Array.from(String(text || "").trim());
+    if (!chars.length) return "";
+    if (chars.length <= 25) return chars.join("");
+    return chars.slice(0, 25).join("") + "…";
+  }
   function fitImg(img) {
     if (img.naturalWidth && img.naturalHeight) {
       var ratio = img.naturalWidth / img.naturalHeight;
-      ratio = Math.max(0.45, Math.min(1.9, ratio)); // 防止极端比例撑爆布局
-      img.style.width = Math.round(innerH * ratio) + "px";
+      ratio = Math.max(0.45, Math.min(1.9, ratio));
+      var h = parseFloat(img.style.height) || innerH;
+      img.style.width = Math.round(h * ratio) + "px";
     }
   }
 
@@ -141,11 +148,14 @@
     cell.dataset.pid = item.id;
 
     // 宽度跟随图片真实比例：竖版「遇」卡片完整展示，不被裁切
+    var caption = clipCaption(item.message);
+    var imgH = caption ? Math.max(40, innerH - 26) : innerH;
     var img = document.createElement("img");
     img.src = item.url;
-    img.alt = item.nickname || "";
-    img.style.width = Math.round(innerH * 4 / 3) + "px"; // 加载前的占位宽度
-    fitImg(img); // 缓存命中时立即修正
+    img.alt = caption;
+    img.style.height = imgH + "px";
+    img.style.width = Math.round(imgH * 4 / 3) + "px";
+    fitImg(img);
     img.addEventListener("load", function () {
       fitImg(img);
       self.ensureFilled();
@@ -165,6 +175,12 @@
       }
     });
     cell.appendChild(img);
+    if (caption) {
+      var cap = document.createElement("div");
+      cap.className = "cap";
+      cap.textContent = caption;
+      cell.appendChild(cap);
+    }
 
     var del = document.createElement("div");
     del.className = "del";
@@ -222,7 +238,7 @@
 
   var rows = [];
   for (var i = 0; i < rowCount; i++) rows.push(new Row(i % 2 === 0 ? -1 : 1));
-  rows.forEach(function (r) { if (r.dir === 1) r.offset = -Math.round(photoH * 0.35); });
+  rows.forEach(function (r) { if (r.dir === 1) r.offset = -photoW - gap; });
 
   var lastT = performance.now();
   (function loop(now) {
@@ -533,7 +549,7 @@
   function startFixedDemo() {
     document.body.classList.add("demo");
     var posters = [
-      { url: "assets/demo/focus.jpg", message: "记录正在创造的项目", nickname: "" },
+      { url: "assets/demo/focus.jpg", message: "记录正在创造的项目，把现场的过程留给后来的人再看一眼", nickname: "" },
       { url: "assets/demo/diary.jpg", message: "", nickname: "@joedoe (Instagram)" },
       { url: "assets/demo/rewards.jpg", message: "来领取特别奖励", nickname: "@joedoe (Instagram)" },
       { url: "", message: "", nickname: "" }

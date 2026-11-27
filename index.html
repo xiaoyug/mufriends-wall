@@ -69,29 +69,40 @@
   /* ---- 滚动区 ---- */
   #wall {
     position: fixed;
-    top: 16px;
-    left: 320px;
-    right: 220px;
-    bottom: 28px;
+    top: 210px;
+    left: 20px;
+    right: 210px;
+    bottom: 18px;
     z-index: 1;
     display: flex; flex-direction: column; justify-content: space-evenly;
-    padding: 8px 0;
+    padding: 0;
     overflow: hidden;
   }
   .row { overflow: visible; white-space: nowrap; will-change: transform; }
 
-  /* 拍立得贴纸卡片：白边 + 黑描边 + 硬投影 + 微旋转 */
+  /* 两行横滚：方框、硬投影、轻微倾斜。速度和循环沿用原来的照片墙。 */
   .cell {
     display: inline-block; vertical-align: top;
     position: relative;
     background: var(--paper);
-    border: 1px solid var(--ink);
+    border: 3px solid var(--black);
     border-radius: 0;
-    padding: 6px;
-    box-shadow: none;
-    transform: none;
+    padding: 8px 8px 10px;
+    box-shadow: 7px 7px 0 rgba(17,17,17,.9);
+    transform: rotate(var(--tilt, 0deg));
   }
-  .cell img { height: 100%; width: auto; max-width: none; object-fit: cover; display: block; background: #eee; }
+  .cell img { width: auto; max-width: none; object-fit: cover; display: block; background: #eee; }
+  .cell .cap {
+    font-family: "IBM Plex Sans SC", "PingFang SC", sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--ink);
+    margin-top: 6px;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   .cell .del {
     position: absolute; top: -14px; right: -14px;
     width: 34px; height: 34px; border-radius: 0;
