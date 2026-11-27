@@ -107,8 +107,10 @@
   var wall = $("wall");
   var rowCount = Math.max(2, Math.min(4, CFG.rows || 3));
   var gap = CFG.gap == null ? 26 : CFG.gap;
-  var openH = Math.floor((wall.getBoundingClientRect().height - 8) / rowCount) - gap;
-  var photoH = CFG.photoHeight > 0 ? CFG.photoHeight : Math.max(140, openH);
+  var wallBox = wall.getBoundingClientRect();
+  var wallPad = parseFloat(getComputedStyle(wall).paddingTop) + parseFloat(getComputedStyle(wall).paddingBottom);
+  var openH = Math.floor((wallBox.height - wallPad) / rowCount) - gap - 28;
+  var photoH = CFG.photoHeight > 0 ? CFG.photoHeight : Math.max(120, openH);
   var photoW = Math.round(photoH * 4 / 3);
   var cellTiltSeed = 0;
   var innerH = photoH - 18; // 卡片内边距 8 + 10
@@ -123,16 +125,18 @@
   function fitImg(img) {
     if (img.naturalWidth && img.naturalHeight) {
       var ratio = img.naturalWidth / img.naturalHeight;
-      ratio = Math.max(0.45, Math.min(1.9, ratio));
+      ratio = Math.max(0.45, Math.min(7 / 5, ratio));
       var h = parseFloat(img.style.height) || innerH;
-      img.style.width = Math.round(h * ratio) + "px";
+      var w = Math.round(h * ratio);
+      img.style.width = w + "px";
+      img.style.objectFit = "contain";
     }
   }
 
   function Row(dir) {
     this.el = document.createElement("div");
     this.el.className = "row";
-    this.el.style.height = (photoH + 26) + "px";  // 26 = 白边 + 投影余量
+    this.el.style.height = (photoH + 40) + "px";  // 倾斜和硬投影留位
     this.el.style.paddingLeft = "12px";           // 给左倾卡片留位
     this.dir = dir;
     this.offset = 0;
