@@ -134,7 +134,21 @@
     box-shadow: none;
     background: var(--paper);
   }
-  .consent input { width: 22px; height: 22px; margin-top: 2px; flex: none; accent-color: var(--accent); }
+  .consent input {
+    width: 22px; height: 22px; margin-top: 2px; flex: none;
+    appearance: none; -webkit-appearance: none;
+    border: 1px solid #BDBDBD; border-radius: 0;
+    background: var(--paper);
+    display: grid; place-items: center;
+  }
+  .consent input:checked { background: var(--accent); }
+  .consent input:checked::after {
+    content: "";
+    width: 5px; height: 9px;
+    border: solid var(--black); border-width: 0 2px 2px 0;
+    transform: rotate(45deg); margin-bottom: 2px;
+  }
+  .consent input:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
   .disclose {
     display: flex;
     align-items: center;
@@ -148,8 +162,7 @@
   .disclose::before { content: "▼"; }
   .disclose[aria-expanded="true"]::before { content: "▲"; }
   #contact-panel[hidden], #photo-actions[hidden], #save-hint[hidden] { display: none; }
-  .photo-actions { display: grid; grid-template-columns: 1fr 1fr; gap: var(--card-gap); margin-top: var(--card-gap); }
-  #rednote { grid-column: 1 / -1; }
+  .photo-actions { display: grid; grid-template-columns: 1fr; gap: var(--card-gap); margin-top: var(--card-gap); }
   .btn, .disclose {
     padding: 18px 40px;
     border: 1px solid var(--black);
@@ -204,7 +217,6 @@
     <div class="photo-actions" id="photo-actions" hidden>
       <button type="button" class="btn" id="save">保存到相册 / Save to album</button>
       <button type="button" class="btn" id="share">分享 / Post</button>
-      <button type="button" class="btn" id="rednote">发小红书 / Post on RedNote</button>
     </div>
     <p class="hint" id="save-hint" hidden>保存会打开系统菜单，请选择“存储图像”。<br>To save, choose “Save Image” in the system menu.</p>
   </section>
@@ -237,7 +249,7 @@
 </main>
 <footer>
   <span id="offline">muShenzhen 2026</span><br>
-  muShenzhen 2026 · upload v5<br>
+  muShenzhen 2026 · upload v6<br>
   视觉素材来源：mushenzhen
 </footer>
 <script src="config.js"></script>

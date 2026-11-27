@@ -173,6 +173,7 @@
     link.download = file.name || "mushenzhen-photo.jpg";
     link.click();
   }
+  var POST_TAGS = "#mushenzhen #madeinshenzhen";
   function shareSelectedPhoto(isSaving) {
     if (!selected || !previewUrl) return;
     var file = selected;
@@ -194,50 +195,50 @@
       say("无法打开系统菜单，已改为下载。 / The share menu failed, so the photo was downloaded.");
     });
   }
-  function handleSaveClick() { shareSelectedPhoto(true); }
-  function handleShareClick() { shareSelectedPhoto(false); }
-  function buildRedNoteText() {
-    var tags = "#madeinshenzhen #mushenzhen";
+  function postShareText() {
     var caption = $("caption").value.trim();
-    if (!caption) return tags;
-    return tags + "\n" + caption;
+    if (!caption) return POST_TAGS;
+    return POST_TAGS + "\n" + caption;
   }
   function copyText(text) {
     if (!(navigator.clipboard && navigator.clipboard.writeText)) return Promise.reject(new Error("clipboard"));
     return navigator.clipboard.writeText(text);
   }
-  function openRedNoteApp() {
-    var popup = window.open("xhsdiscover://", "_blank");
-    if (!popup) {
-      window.open("https://www.xiaohongshu.com", "_blank");
+  function sharePost(copied) {
+    var file = selected;
+    var text = postShareText();
+    var withText = { files: [file], text: text };
+    var filesOnly = { files: [file] };
+    var payload = null;
+    if (navigator.share && navigator.canShare && navigator.canShare(withText)) payload = withText;
+    else if (navigator.share && navigator.canShare && navigator.canShare(filesOnly)) payload = filesOnly;
+    if (!payload) {
+      downloadPhoto(file, previewUrl);
+      say(copied
+        ? "标签已复制，照片已开始下载。 / Tags copied. The photo download has started."
+        : "已开始下载这张照片。请手动复制： " + POST_TAGS + " / The photo download has started. Copy this text yourself.");
       return;
     }
-    setTimeout(function () {
-      if (document.visibilityState === "visible") window.open("https://www.xiaohongshu.com", "_blank");
-    }, 900);
-  }
-  function shareRedNoteFile(shareText, hint) {
-    var canShareFiles = !!(navigator.share && navigator.canShare && navigator.canShare({ files: [selected] }));
-    if (!canShareFiles) {
-      openRedNoteApp();
-      return;
-    }
-    return navigator.share({ files: [selected], text: shareText }).catch(function (error) {
+    navigator.share(payload).then(function () {
+      say(copied
+        ? "标签已复制，分享菜单已关闭。 / Tags copied. Share menu closed."
+        : "分享菜单已关闭。请手动复制： " + POST_TAGS + " / Menu closed. Copy this text yourself.");
+    }).catch(function (error) {
       if (error && error.name === "AbortError") return;
-      say(hint);
-      openRedNoteApp();
+      downloadPhoto(file, previewUrl);
+      say(copied
+        ? "标签已复制。无法打开系统菜单，已改为下载。 / Tags copied. The share menu failed, so the photo was downloaded."
+        : "无法打开系统菜单，已改为下载。请手动复制： " + POST_TAGS + " / The share menu failed, so the photo was downloaded. Copy this text yourself.");
     });
   }
-  function handleRedNoteClick() {
-    if (!selected) return;
-    var shareText = buildRedNoteText();
-    var hint = "标签已复制，在小红书里粘贴 / Tags copied — paste them in RedNote";
-    copyText(shareText).then(function () {
-      say(hint);
-      return shareRedNoteFile(shareText, hint);
+  function handleSaveClick() { shareSelectedPhoto(true); }
+  function handleShareClick() {
+    if (!selected || !previewUrl) return;
+    copyText(POST_TAGS).then(function () {
+      sharePost(true);
     }).catch(function () {
-      say("未能写入剪贴板，请手动复制： " + shareText + " / Could not copy. Copy this text yourself.");
-      return shareRedNoteFile(shareText, hint);
+      say("未能写入剪贴板，请手动复制： " + POST_TAGS + " / Could not copy. Copy this text yourself.");
+      sharePost(false);
     });
   }
 
@@ -249,7 +250,6 @@
   });
   $("save").addEventListener("click", handleSaveClick);
   $("share").addEventListener("click", handleShareClick);
-  $("rednote").addEventListener("click", handleRedNoteClick);
   $("consent").addEventListener("change", refreshGate);
   $("send").addEventListener("click", function () {
     if (!canSubmit()) { refreshGate(); return; }
