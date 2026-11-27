@@ -23,19 +23,22 @@
     return text;
   }
   var scheduleApplied = false;
+  function setEventTitle(text) {
+    var block = $("date-block");
+    var raw = text || "";
+    var cut = raw.indexOf(" / ");
+    var shown = cut === -1 ? raw : raw.slice(0, cut) + "\n" + raw.slice(cut + 3);
+    if (Array.from(shown).length > 180) shown = Array.from(shown).slice(0, 180).join("") + "…";
+    block.textContent = shown;
+    block.title = raw;
+  }
   function renderCurrentEventName(name) {
     if (scheduleApplied) return;
-    var block = $("date-block");
-    var text = currentEventName(name);
-    block.textContent = text;
-    block.title = text;
+    setEventTitle(currentEventName(name));
   }
   function showScheduleTitle(title) {
     scheduleApplied = true;
-    var block = $("date-block");
-    var text = title || currentEventName("");
-    block.textContent = text;
-    block.title = text;
+    setEventTitle(title || currentEventName(""));
   }
   function loadScheduleName() {
     var schedule = window.MushenzhenSchedule;
@@ -109,8 +112,8 @@
   var gap = CFG.gap == null ? 26 : CFG.gap;
   var wallBox = wall.getBoundingClientRect();
   var wallPad = parseFloat(getComputedStyle(wall).paddingTop) + parseFloat(getComputedStyle(wall).paddingBottom);
-  var openH = Math.floor((wallBox.height - wallPad) / rowCount) - gap - 28;
-  var photoH = CFG.photoHeight > 0 ? CFG.photoHeight : Math.max(120, openH);
+  var openH = Math.floor((wallBox.height - wallPad) / rowCount) - gap - 8;
+  var photoH = CFG.photoHeight > 0 ? CFG.photoHeight : Math.max(160, openH);
   var photoW = Math.round(photoH * 4 / 3);
   var cellTiltSeed = 0;
   var innerH = photoH - 18; // 卡片内边距 8 + 10
@@ -136,7 +139,7 @@
   function Row(dir) {
     this.el = document.createElement("div");
     this.el.className = "row";
-    this.el.style.height = (photoH + 40) + "px";  // 倾斜和硬投影留位
+    this.el.style.height = (photoH + 28) + "px";  // 倾斜和硬投影留位
     this.el.style.paddingLeft = "12px";           // 给左倾卡片留位
     this.dir = dir;
     this.offset = 0;
