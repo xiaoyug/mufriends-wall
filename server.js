@@ -28,11 +28,28 @@ var MIME = {
   ".jpeg": "image/jpeg",
   ".svg": "image/svg+xml",
   ".webp": "image/webp",
-  ".ico": "image/x-icon"
+  ".ico": "image/x-icon",
+  ".mjs": "text/javascript; charset=utf-8"
 };
+
+var scheduleReady = import("./schedule.mjs");
 
 http.createServer(function (req, res) {
   var urlPath = decodeURIComponent(req.url.split("?")[0]);
+  if (urlPath === "/events/now") {
+    var query = req.url.indexOf("?") >= 0 ? req.url.slice(req.url.indexOf("?")) : "";
+    scheduleReady.then(function (schedule) {
+      var nowMs = schedule.parseNowParam(new URLSearchParams(query).get("now"), Date.now());
+      fs.readFile(path.join(root, "schedule-sample.json"), function (err, buf) {
+        if (err) { res.writeHead(500); res.end(); return; }
+        var running = schedule.runningAt(schedule.normalizeList(JSON.parse(buf.toString())), nowMs);
+        var body = JSON.stringify({ source: "sample", now: new Date(nowMs).toISOString(), events: running });
+        res.writeHead(200, { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" });
+        res.end(body);
+      });
+    }).catch(function () { res.writeHead(500); res.end(); });
+    return;
+  }
   if (urlPath === "/upload") {
     var q = req.url.indexOf("?") >= 0 ? req.url.slice(req.url.indexOf("?")) : "";
     res.writeHead(302, { Location: "/upload/" + q });

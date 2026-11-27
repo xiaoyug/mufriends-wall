@@ -1,7 +1,9 @@
 /* MuFriends 照片墙 Worker
  * 1. /proxy/* 反向代理到 Supabase（REST + Storage），解决国内直连 supabase.co 不稳定
- * 2. 其余路径走静态资产（大屏页面本身）
+ * 2. /events/now 只读：从 sola 取正在进行的场次。Sunny 部署后才上线。
+ * 3. 其余路径走静态资产（大屏页面本身）
  */
+import { SOLA_LIST, normalizeList, parseNowParam, runningAt } from "./schedule.mjs";
 
 var UPSTREAM = "https://kqttuewfmvuuohvqbhel.supabase.co";
 
@@ -16,6 +18,10 @@ var CORS = {
 export default {
   async fetch(request, env) {
     var url = new URL(request.url);
+
+    if (url.pathname === "/events/now") {
+      return eventsNow(url);
+    }
 
     if (url.pathname.indexOf("/proxy/") === 0) {
       // 预检请求直接放行
@@ -57,3 +63,31 @@ export default {
     return env.ASSETS.fetch(request);
   }
 };
+
+// The full list is cached for 8 minutes. Each request then filters by now.
+async function solaList() {
+  var cache = caches.default;
+  var key = new Request(SOLA_LIST);
+  var hit = await cache.match(key);
+  if (hit) return hit.json();
+  var res = await fetch(SOLA_LIST, { headers: { accept: "application/json" } });
+  if (!res.ok) throw new Error("sola " + res.status);
+  var data = await res.json();
+  var stored = new Response(JSON.stringify(data), {
+    headers: { "content-type": "application/json", "cache-control": "public, max-age=480" }
+  });
+  await cache.put(key, stored);
+  return data;
+}
+
+async function eventsNow(url) {
+  var nowMs = parseNowParam(url.searchParams.get("now"), Date.now());
+  var headers = { "content-type": "application/json; charset=utf-8", "cache-control": "no-store", "access-control-allow-origin": "*" };
+  try {
+    var payload = await solaList();
+    var events = runningAt(normalizeList(payload), nowMs);
+    return new Response(JSON.stringify({ source: "sola", now: new Date(nowMs).toISOString(), events: events }), { status: 200, headers: headers });
+  } catch (err) {
+    return new Response(JSON.stringify({ source: "error", now: new Date(nowMs).toISOString(), events: [] }), { status: 502, headers: headers });
+  }
+}

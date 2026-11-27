@@ -32,6 +32,8 @@ server.js           本地预览用（部署时不需要）
 
 观众上传页是 `upload/`。说明写在照片的 `message`，自愿填写的联系文字写在 `nickname`。两个都空着时大屏不显示文字。
 
+正在进行的场次来自 sola 的公开接口 `GET https://api.sola.day/api/v1/events?group_id=3mywjlvveoge2&limit=100`（无需登录，没有公开的 iCal）。Worker 的 `GET /events/now` 会拉这份列表，缓存约 8 分钟，再按 UTC 滤出 `start <= now < end`。正式站要 Sunny 跑 `npx wrangler deploy` 才生效。GitHub Pages 和本地预览不打这个接口，改用仓库里的 `schedule-sample.json`，并用 `?now=2026-12-02T14:30:00%2B08:00` 这种时间看某一刻。照片仍归 `mushenzhen-2026`。场次标题要入库的话，Sunny 可选执行 `sql/mushenzhen-session-optional.sql`；没执行也不影响上传。
+
 上场前执行仓库里的 `sql/mushenzhen-2026-rls.sql`（不要在这个 PR 里直接改线上库）。
 
 ## 三分钟配置

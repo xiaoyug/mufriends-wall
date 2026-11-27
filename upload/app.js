@@ -38,12 +38,78 @@
   eventSelect.value = chosen.slug;
   $("date").value = chosen.date;
   $("date").addEventListener("input", function () { $("date").dataset.touched = "1"; });
+  var sessionId = "";
+  var sessionTitle = "";
+  var runningSessions = [];
+  function fillSessions(list) {
+    runningSessions = list || [];
+    while (eventSelect.firstChild) eventSelect.removeChild(eventSelect.firstChild);
+    if (!runningSessions.length) {
+      var fallback = document.createElement("option");
+      fallback.value = "";
+      fallback.textContent = CFG.eventName;
+      eventSelect.appendChild(fallback);
+      sessionId = "";
+      sessionTitle = "";
+      return;
+    }
+    runningSessions.forEach(function (ev) {
+      var opt = document.createElement("option");
+      opt.value = ev.id;
+      opt.textContent = ev.title;
+      eventSelect.appendChild(opt);
+    });
+    var current = window.MushenzhenSchedule.chooseCurrent(runningSessions);
+    eventSelect.value = current.id;
+    sessionId = current.id;
+    sessionTitle = current.title;
+    if (!$("date").dataset.touched) $("date").value = window.MushenzhenSchedule.shanghaiDate(current.start);
+  }
+  function sessionsFrom(data, nowMs) {
+    if (data && (data.source === "sola" || data.source === "sample")) return data.events || [];
+    return window.MushenzhenSchedule.runningAt(window.MushenzhenSchedule.normalizeList(data), nowMs);
+  }
+  function loadRunning() {
+    var schedule = window.MushenzhenSchedule;
+    if (!schedule || slug !== (CFG.defaultSlug || "mushenzhen-2026")) return;
+    var nowMs = schedule.parseNowParam(params.get("now"), Date.now());
+    var live = location.hostname === "mufriends.mushenzhen.xyz";
+    var url = live ? "/events/now?now=" + encodeURIComponent(new Date(nowMs).toISOString()) : "../schedule-sample.json";
+    fetch(url).then(function (res) {
+      if (!res.ok) throw new Error("schedule");
+      return res.json();
+    }).then(function (data) {
+      fillSessions(sessionsFrom(data, nowMs));
+    }).catch(function () {
+      if (!live) return;
+      fetch("../schedule-sample.json").then(function (res) {
+        if (!res.ok) throw new Error("sample");
+        return res.json();
+      }).then(function (data) {
+        fillSessions(sessionsFrom(data, nowMs));
+      }).catch(function () { fillSessions([]); });
+    });
+  }
   eventSelect.addEventListener("change", function () {
+    var found = null;
+    for (var i = 0; i < runningSessions.length; i++) {
+      if (runningSessions[i].id === eventSelect.value) found = runningSessions[i];
+    }
+    if (found) {
+      sessionId = found.id;
+      sessionTitle = found.title;
+      if (!$("date").dataset.touched) $("date").value = window.MushenzhenSchedule.shanghaiDate(found.start);
+      return;
+    }
+    sessionId = "";
+    sessionTitle = "";
     var next = eventBySlug(eventSelect.value) || events[0];
+    if (!next) return;
     slug = next.slug;
     if (!$("date").dataset.touched) $("date").value = next.date;
     $("slug-line").textContent = "照片只进入这一场 / Photos stay on: " + slug;
   });
+  loadRunning();
   $("slug-line").textContent = "照片只进入这一场 / Photos stay on: " + slug;
   if (params.get("e") === "mufriends-2026-11-06") {
     say("这是 11 月 6 日的旧活动，照片会进入 muShenzhen 2026。 / That link is the 6 Nov event. Photos go to muShenzhen 2026.");
@@ -134,13 +200,40 @@
     });
   }
   function photoRow(path) {
-    return {
+    var row = {
       nickname: optedContact(),
       message: $("caption").value.trim().slice(0, 140),
       photo_url: CFG.proxy + "/storage/v1/object/public/photos/" + path,
       event: slug,
       deleted: false
     };
+    if (sessionId) {
+      row.session_id = sessionId;
+      row.session_title = sessionTitle;
+    }
+    return row;
+  }
+  function postPhoto(headers, row) {
+    var url = CFG.proxy + "/rest/v1/photos";
+    return fetch(url, {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(row)
+    }).then(function (ins) {
+      if (ins.ok || !row.session_id) return ins;
+      var plain = {
+        nickname: row.nickname,
+        message: row.message,
+        photo_url: row.photo_url,
+        event: row.event,
+        deleted: row.deleted
+      };
+      return fetch(url, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(plain)
+      });
+    });
   }
   function clearPhoto() {
     if (previewUrl) URL.revokeObjectURL(previewUrl);
@@ -270,16 +363,12 @@
         body: blob
       }).then(function (up) {
         if (!up.ok) throw new Error("照片上传被拒 HTTP " + up.status);
-        return fetch(CFG.proxy + "/rest/v1/photos", {
-          method: "POST",
-          headers: {
-            apikey: headers.apikey,
-            Authorization: headers.Authorization,
-            "Content-Type": "application/json",
-            Prefer: "return=minimal"
-          },
-          body: JSON.stringify(photoRow(path))
-        });
+        return postPhoto({
+          apikey: headers.apikey,
+          Authorization: headers.Authorization,
+          "Content-Type": "application/json",
+          Prefer: "return=minimal"
+        }, photoRow(path));
       }).then(function (ins) {
         if (!ins.ok) throw new Error("写入被拒 HTTP " + ins.status);
         return fetch(CFG.proxy + "/rest/v1/events", {

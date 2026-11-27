@@ -22,11 +22,40 @@
     if (!text) return CFG.eventName || "muShenzhen 2026";
     return text;
   }
+  var scheduleApplied = false;
   function renderCurrentEventName(name) {
+    if (scheduleApplied) return;
     var block = $("date-block");
     var text = currentEventName(name);
     block.textContent = text;
     block.title = text;
+  }
+  function showScheduleTitle(title) {
+    scheduleApplied = true;
+    var block = $("date-block");
+    var text = title || currentEventName("");
+    block.textContent = text;
+    block.title = text;
+  }
+  function loadScheduleName() {
+    var schedule = window.MushenzhenSchedule;
+    if (!schedule) return;
+    var nowValue = "";
+    var match = /[?&]now=([^&]+)/.exec(location.search);
+    if (match) nowValue = decodeURIComponent(match[1]);
+    var nowMs = schedule.parseNowParam(nowValue, Date.now());
+    var live = location.hostname === "mufriends.mushenzhen.xyz";
+    var url = live ? "/events/now?now=" + encodeURIComponent(new Date(nowMs).toISOString()) : "schedule-sample.json";
+    fetch(url).then(function (res) {
+      if (!res.ok) throw new Error("schedule");
+      return res.json();
+    }).then(function (data) {
+      var running = (data && (data.source === "sola" || data.source === "sample"))
+        ? (data.events || [])
+        : schedule.runningAt(schedule.normalizeList(data), nowMs);
+      var current = schedule.chooseCurrent(running);
+      showScheduleTitle(current ? current.title : "");
+    }).catch(function () {});
   }
   function renderSlogan(text) {
     var pill = $("slogan-pill");
@@ -544,6 +573,7 @@
   window.__wall = { add: addToWall, popup: enqueuePopup, remove: removePhoto };
 
   var sbCfg = CFG.supabase || {};
+  loadScheduleName();
   if (isReadOnlyDemo()) {
     startFixedDemo();
   } else if (sbCfg.url && sbCfg.anonKey) {
