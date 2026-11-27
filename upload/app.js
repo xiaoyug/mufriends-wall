@@ -161,8 +161,8 @@
 
   $("contact-toggle").addEventListener("click", handleContactToggle);
 
-  function canSubmit() {
-    return !busy && !!(selected && $("consent").checked);
+  function canSend() {
+    return !busy && !!selected;
   }
   function allowsUpload() {
     return location.hostname === "mufriends.mushenzhen.xyz";
@@ -245,17 +245,36 @@
     $("caption-wrap").hidden = true;
     setContactOpen(false);
     setPhotoActionsVisible(false);
-    $("consent").checked = true;
+    $("consent").checked = false;
     $("pick-label").textContent = "添加照片 / Add a photo";
   }
   function refreshGate() {
-    var ready = canSubmit();
-    $("send").disabled = !ready;
+    $("send").disabled = !canSend();
     if (!selected) $("gate").textContent = "请先添加一张照片。 / Add a photo first.";
-    else if (!$("consent").checked) $("gate").textContent = "请先勾选同意后再上传。 / Tick consent before uploading.";
     else $("gate").textContent = "";
   }
-
+  var modalReturn = null;
+  function openConsentModal() {
+    modalReturn = document.activeElement;
+    $("consent-modal").hidden = false;
+    $("consent-agree").focus();
+    document.addEventListener("keydown", onModalKey);
+  }
+  function closeConsentModal() {
+    $("consent-modal").hidden = true;
+    document.removeEventListener("keydown", onModalKey);
+    if (modalReturn && modalReturn.focus) modalReturn.focus();
+  }
+  function onModalKey(event) {
+    if ($("consent-modal").hidden) return;
+    if (event.key === "Escape") { event.preventDefault(); closeConsentModal(); return; }
+    if (event.key !== "Tab") return;
+    var nodes = [$("consent-agree"), $("consent-no"), $("consent-close")];
+    var first = nodes[0];
+    var last = nodes[nodes.length - 1];
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+  }
   function setPhotoActionsVisible(isVisible) {
     $("photo-actions").hidden = !isVisible;
     $("save-hint").hidden = !isVisible;
@@ -344,8 +363,8 @@
   $("save").addEventListener("click", handleSaveClick);
   $("share").addEventListener("click", handleShareClick);
   $("consent").addEventListener("change", refreshGate);
-  $("send").addEventListener("click", function () {
-    if (!canSubmit()) { refreshGate(); return; }
+  function beginUpload() {
+    if (!$("consent").checked || !selected || busy) return;
     if (!allowsUpload()) {
       say("这是预览，照片没有传到正式墙。 / Preview only. The photo was not sent to the live wall.");
       return;
@@ -395,6 +414,21 @@
       busy = false;
       refreshGate();
     });
+  }
+  $("send").addEventListener("click", function () {
+    if (!canSend()) { refreshGate(); return; }
+    if (!$("consent").checked) { openConsentModal(); return; }
+    beginUpload();
+  });
+  $("consent-agree").addEventListener("click", function () {
+    $("consent").checked = true;
+    closeConsentModal();
+    beginUpload();
+  });
+  $("consent-no").addEventListener("click", closeConsentModal);
+  $("consent-close").addEventListener("click", closeConsentModal);
+  $("consent-modal").addEventListener("click", function (event) {
+    if (event.target === $("consent-modal")) closeConsentModal();
   });
   var host = location.hostname;
   if (host !== "mufriends.mushenzhen.xyz" && host !== "localhost" && host !== "127.0.0.1") {

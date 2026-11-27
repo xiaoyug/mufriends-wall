@@ -114,18 +114,51 @@
     background: var(--paper);
   }
   .event-row .field { margin-top: 0; min-width: 0; }
+  #event, #date {
+    box-sizing: border-box;
+    height: 48px;
+    margin-top: 8px;
+    padding: 0 44px 0 12px;
+    border: 1px solid #BDBDBD;
+    border-radius: 0;
+    background-color: #fff;
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 16px 16px;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 46px;
+    appearance: none;
+    -webkit-appearance: none;
+  }
   #event {
     min-width: 0;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 6l5 5 5-5' fill='none' stroke='%23212121' stroke-width='1.6'/%3E%3C/svg%3E");
   }
-  #date { min-width: 11.5rem; }
+  #date {
+    min-width: 11.5rem;
+    position: relative;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='2' y='3' width='12' height='11' fill='none' stroke='%23212121' stroke-width='1.4'/%3E%3Cpath d='M2 6.5h12M5 2v3M11 2v3' fill='none' stroke='%23212121' stroke-width='1.4'/%3E%3C/svg%3E");
+  }
+  #date::-webkit-calendar-picker-indicator {
+    position: absolute;
+    right: 0;
+    width: 44px;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
   @media (max-width: 520px) {
     .event-row { grid-template-columns: 1fr; }
   }
   #status { min-height: 1.4em; margin: 12px 0 0; font-size: 14px; color: var(--ink); }
   .hint { margin: 8px 0 0; font-size: 12px; line-height: 1.45; color: var(--ink); }
+  label.field .hint-plain { font-weight: 400; font-size: 12px; }
   .card {
     margin-top: 18px;
     padding: var(--card-pad);
@@ -135,7 +168,7 @@
     background: var(--paper);
   }
   .consent input {
-    width: 22px; height: 22px; margin-top: 2px; flex: none;
+    width: 30px; height: 30px; margin: 0; flex: none;
     appearance: none; -webkit-appearance: none;
     border: 1px solid #BDBDBD; border-radius: 0;
     background: var(--paper);
@@ -144,9 +177,9 @@
   .consent input:checked { background: var(--accent); }
   .consent input:checked::after {
     content: "";
-    width: 5px; height: 9px;
+    width: 7px; height: 12px;
     border: solid var(--black); border-width: 0 2px 2px 0;
-    transform: rotate(45deg); margin-bottom: 2px;
+    transform: rotate(45deg); margin-bottom: 3px;
   }
   .consent input:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
   .disclose {
@@ -184,8 +217,47 @@
     .disclose { padding-left: 0; padding-right: 0; }
   }
   #contact-panel { margin-top: var(--card-gap); }
-  .consent { display: flex; gap: 12px; align-items: flex-start; margin-top: 18px; font-size: 14px; }
+  .consent {
+    display: flex; gap: 12px; align-items: center;
+    margin-top: 18px; padding: 8px 0; min-height: 44px;
+    font-size: 14px; cursor: pointer;
+  }
   button.send:disabled { opacity: 0.4; cursor: not-allowed; }
+  #consent-modal {
+    position: fixed; inset: 0; z-index: 80;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(33,33,33,.45);
+    padding: 18px;
+  }
+  #consent-modal[hidden] { display: none; }
+  .modal-card {
+    position: relative;
+    width: min(440px, 100%);
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--black);
+    border-radius: 0;
+    padding: 28px 20px 20px;
+  }
+  .modal-card h2 { margin: 0 0 12px; font-size: 18px; font-weight: 600; }
+  .modal-card p { margin: 0; font-size: 14px; font-weight: 400; line-height: 1.5; }
+  .modal-actions { display: grid; gap: 10px; margin-top: 18px; }
+  #consent-agree, #consent-no {
+    width: 100%; margin: 0; padding: 14px 20px;
+    border: 1px solid var(--black); border-radius: 0;
+    font: inherit; font-size: 16px; font-weight: 600; cursor: pointer;
+  }
+  #consent-agree { background: var(--accent); color: var(--black); }
+  #consent-no { background: var(--black); color: var(--paper); }
+  #consent-close {
+    position: absolute; top: 4px; right: 4px;
+    width: 44px; height: 44px;
+    border: 0; background: transparent; color: var(--ink);
+    font: inherit; font-size: 20px; cursor: pointer;
+  }
+  #consent-agree:focus-visible, #consent-no:focus-visible, #consent-close:focus-visible {
+    outline: 3px solid var(--accent); outline-offset: 3px;
+  }
   footer {
     margin-top: 32px;
     padding: 16px 18px 0;
@@ -232,24 +304,34 @@
   <section class="card" aria-label="联系方式 / Contact">
     <button type="button" class="disclose" id="contact-toggle" aria-expanded="false" aria-controls="contact-panel">联系方式 / Contact</button>
     <div id="contact-panel" hidden>
-      <p class="hint">只保存你写下的文字，不能上传二维码或联系方式图片。打开后，这段文字会和照片一起出现在大屏。<br>Text you type only — no QR code and no contact image. If this is open, that text is shown on the wall with your photo.</p>
       <label class="field" for="contact">社媒账号或邮箱 <span>Social handle or email</span>
-        <span class="hint">填写邮箱或社媒账号，并注明平台，如 @joedoe (Instagram)</span>
-        <input id="contact" type="text" maxlength="80" autocomplete="off" placeholder="Type your email or social handle, and note the platform, e.g. @joedoe (Instagram)">
+        <span class="hint hint-plain">填写邮箱或社媒账号，并注明平台，如 @joedoe (Instagram)<br>Type your email or social handle and note the platform, e.g. @joedoe (Instagram)</span>
+        <input id="contact" type="text" maxlength="80" autocomplete="off" placeholder="email / social handle">
       </label>
     </div>
   </section>
   <label class="consent" for="consent">
-    <input id="consent" type="checkbox" checked>
+    <input id="consent" type="checkbox">
     <span>上传照片即表示我同意 muShenzhen 在其社交媒体渠道及现场照片墙上展示该照片。<br>By uploading this photo, I give consent for muShenzhen to display it on its social media channels and on the photo wall.</span>
   </label>
   <button class="send" id="send" type="button" disabled>上传到照片墙 / Upload to the wall</button>
+  <div id="consent-modal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="consent-title">
+      <button type="button" id="consent-close" aria-label="关闭 / Close">✕</button>
+      <h2 id="consent-title">上传同意 / Upload consent</h2>
+      <p>上传照片即表示我同意 muShenzhen 在其社交媒体渠道及现场照片墙上展示该照片。<br>By uploading this photo, I give consent for muShenzhen to display it on its social media channels and on the photo wall.</p>
+      <div class="modal-actions">
+        <button type="button" id="consent-agree">同意 / Agree</button>
+        <button type="button" id="consent-no">不同意 / Disagree</button>
+      </div>
+    </div>
+  </div>
   <p class="hint" id="gate" role="status"></p>
   <p id="status" role="status" aria-live="polite"></p>
 </main>
 <footer>
   <span id="offline">muShenzhen 2026</span><br>
-  muShenzhen 2026 · upload v7<br>
+  muShenzhen 2026 · upload v8<br>
   视觉素材来源：mushenzhen
 </footer>
 <script src="config.js"></script>
