@@ -463,6 +463,7 @@
         if (items.length === 0) $("empty").style.display = "flex";
         items.forEach(addToWall);
         if (res.data && res.data.length > 0) lastTime = res.data[0].created_at;
+        else if (!lastTime) lastTime = new Date().toISOString();
       });
   }
 
