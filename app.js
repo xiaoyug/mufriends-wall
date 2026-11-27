@@ -572,6 +572,7 @@
     $("popup-nick").textContent = (CFG.showNickname !== false && item.nickname) ? item.nickname : "";
     $("popup-msg").textContent = (CFG.showMessage !== false && item.message) ? item.message : "";
     $("popup").classList.add("show", "review");
+    $("popup-close").focus();
   }
   function startFixedDemo() {
     document.body.classList.add("demo");
@@ -605,9 +606,21 @@
       var item = byId[t.dataset.pid];
       if (item) showFixedPopup(item);
     });
+    function closeReviewPopup() {
+      $("popup").classList.remove("show", "review");
+    }
     $("popup").addEventListener("click", function (e) {
       if (e.target !== $("popup")) return;
-      $("popup").classList.remove("show", "review");
+      closeReviewPopup();
+    });
+    $("popup-close").addEventListener("click", function (e) {
+      e.stopPropagation();
+      closeReviewPopup();
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key !== "Escape") return;
+      if (!$("popup").classList.contains("review")) return;
+      closeReviewPopup();
     });
   }
 
