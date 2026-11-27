@@ -239,6 +239,18 @@
     src: url("assets/fonts/IBMPlexSansSC-SemiBold.woff2") format("woff2");
     font-weight: 600; font-style: normal; font-display: swap;
   }
+  @media (max-width: 520px) {
+    #header { padding: 12px 12px 0; }
+    #logo { width: 96px; min-width: 96px; }
+    #brand-block { padding: 6px; }
+    #date-block { max-width: calc(100vw - 28px); font-size: 15px; }
+    #makers-line { font-size: 11px; letter-spacing: 0.05em; }
+    #wall { top: 188px; left: 8px; right: 132px; bottom: 12px; padding: 10px 4px 8px; }
+    #qr-box { right: 8px; bottom: 8px; padding: 6px; }
+    #qr canvas, #qr img { width: 76px !important; height: 76px !important; }
+    #qr-box .tip { font-size: 12px; }
+  }
+
   /* ---- 状态灯 ---- */
   /* Hidden unless the connection fails, so the corner is not a stray square. */
   #status {
