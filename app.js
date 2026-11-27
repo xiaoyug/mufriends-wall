@@ -30,6 +30,7 @@
   }
   function renderSlogan(text) {
     var pill = $("slogan-pill");
+    if (!pill) return;
     if (text) { pill.textContent = text; pill.style.display = "inline-block"; }
     else { pill.style.display = "none"; }
   }
