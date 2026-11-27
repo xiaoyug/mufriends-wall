@@ -552,7 +552,7 @@
       { url: "assets/demo/focus.jpg", message: "记录正在创造的项目，把现场的过程留给后来的人再看一眼", nickname: "" },
       { url: "assets/demo/diary.jpg", message: "", nickname: "@joedoe (Instagram)" },
       { url: "assets/demo/rewards.jpg", message: "来领取特别奖励", nickname: "@joedoe (Instagram)" },
-      { url: "", message: "", nickname: "" }
+      { url: "assets/demo/diary.jpg", message: "", nickname: "" }
     ];
     var byId = {};
     var n = 0;
@@ -561,7 +561,7 @@
         var shot = posters[s];
         var item = {
           id: "demo-" + n,
-          url: shot.url || makeDemoPhoto(n),
+          url: shot.url,
           message: shot.message,
           nickname: shot.nickname
         };
