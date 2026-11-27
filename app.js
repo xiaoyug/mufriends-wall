@@ -485,12 +485,62 @@
     }, 12000);
   }
 
+  // ---------- 只读演示：?demo=1 用本地海报，不连云端 ----------
+  function isReadOnlyDemo() {
+    return /[?&]demo=1(?:&|$)/.test(location.search);
+  }
+  function showFixedPopup(item) {
+    $("popup-img").src = item.url;
+    $("popup-nick").textContent = (CFG.showNickname !== false && item.nickname) ? item.nickname : "";
+    $("popup-msg").textContent = (CFG.showMessage !== false && item.message) ? item.message : "";
+    $("popup").classList.add("show", "review");
+  }
+  function startFixedDemo() {
+    document.body.classList.add("demo");
+    var posters = [
+      { url: "assets/demo/focus.jpg", message: "记录正在创造的项目", nickname: "" },
+      { url: "assets/demo/diary.jpg", message: "", nickname: "@joedoe (Instagram)" },
+      { url: "assets/demo/rewards.jpg", message: "来领取特别奖励", nickname: "@joedoe (Instagram)" },
+      { url: "", message: "", nickname: "" }
+    ];
+    var byId = {};
+    var n = 0;
+    for (var round = 0; round < 3; round++) {
+      for (var s = 0; s < posters.length; s++) {
+        var shot = posters[s];
+        var item = {
+          id: "demo-" + n,
+          url: shot.url || makeDemoPhoto(n),
+          message: shot.message,
+          nickname: shot.nickname
+        };
+        byId[item.id] = item;
+        addToWall(item);
+        n++;
+      }
+    }
+    wall.addEventListener("click", function (e) {
+      var t = e.target;
+      if (t.classList && t.classList.contains("del")) return;
+      while (t && t !== wall && !(t.classList && t.classList.contains("cell"))) t = t.parentNode;
+      if (!t || t === wall) return;
+      var item = byId[t.dataset.pid];
+      if (item) showFixedPopup(item);
+    });
+    $("popup").addEventListener("click", function (e) {
+      if (e.target !== $("popup")) return;
+      $("popup").classList.remove("show", "review");
+    });
+  }
+
   // ---------- 启动 ----------
   // 调试钩子：控制台可手动加照片验证布局
   window.__wall = { add: addToWall, popup: enqueuePopup, remove: removePhoto };
 
   var sbCfg = CFG.supabase || {};
-  if (sbCfg.url && sbCfg.anonKey) {
+  if (isReadOnlyDemo()) {
+    startFixedDemo();
+  } else if (sbCfg.url && sbCfg.anonKey) {
     startSupabase(sbCfg);
   } else {
     console.info("[照片墙] 未配置 Supabase，进入 demo 模式");
